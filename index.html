@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FILEFORGE | DBMS File Organization Lab</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="toastContainer"></div>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark">◆</div>
+
+            <div>
+                <h2>FILEFORGE</h2>
+                <span>DBMS VIRTUAL LAB</span>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav>
+
+            <button class="nav-btn active" data-page="dashboard">
+                <span>⌂</span>
+                Dashboard
+            </button>
+
+            <button class="nav-btn" data-page="simulator">
+                <span>▣</span>
+                Simulator
+            </button>
+
+            <button class="nav-btn" data-page="analytics">
+                <span>◉</span>
+                Analytics
+            </button>
+
+            <button class="nav-btn" data-page="history">
+                <span>◷</span>
+                History
+            </button>
+
+        </nav>
+
+        <div class="nav-label">KNOWLEDGE</div>
+
+        <nav>
+
+            <button class="nav-btn" data-page="learn">
+                <span>?</span>
+                Learn
+            </button>
+
+            <button class="nav-btn" data-page="quiz">
+                <span>✓</span>
+                Quiz
+            </button>
+
+            <button class="nav-btn" data-page="about">
+                <span>ⓘ</span>
+                About
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button id="themeBtn" class="theme-btn">
+                ◐
+                <span>Toggle Theme</span>
+            </button>
+
+            <div class="engine-status">
+                <span class="online-dot"></span>
+                Simulation Engine
+                <b>ONLINE</b>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+                <div class="breadcrumb">
+                    DBMS / FILE ORGANIZATION /
+                    <span id="breadcrumbPage">DASHBOARD</span>
+                </div>
+
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button class="top-btn" id="sampleBtn">
+                    ⚡
+                    Sample
+                </button>
+
+                <button class="top-btn" id="exportBtn">
+                    ↓
+                    Export
+                </button>
+
+                <button class="top-btn danger-outline" id="resetBtn">
+                    ↻
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             DASHBOARD
+        ====================================================== -->
+
+        <section class="page active" id="dashboard">
+
+            <div class="hero">
+
+                <div class="hero-content">
+
+                    <div class="status-badge">
+                        <span></span>
+                        INTERACTIVE DBMS LAB
+                    </div>
+
+                    <h2>
+                        Understand files.
+                        <br>
+                        <em>Visualize the difference.</em>
+                    </h2>
+
+                    <p>
+                        Explore how Heap and Sequential file organization
+                        store records, use blocks, and perform database
+                        operations through an interactive simulation.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <button class="primary-btn"
+                                onclick="navigate('simulator')">
+                            Launch Simulator
+                            <span>→</span>
+                        </button>
+
+                        <button class="ghost-btn"
+                                onclick="navigate('learn')">
+                            Learn Concepts
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-diagram">
+
+                    <div class="diagram-file">
+
+                        <div class="diagram-title">
+                            HEAP
+                            <span>INSERT ORDER</span>
+                        </div>
+
+                        <div class="mini-block">
+                            <b>BLOCK 00</b>
+                            <span>108</span>
+                            <span>101</span>
+                            <span>115</span>
+                        </div>
+
+                        <div class="mini-block">
+                            <b>BLOCK 01</b>
+                            <span>103</span>
+                            <span>110</span>
+                        </div>
+
+                    </div>
+
+                    <div class="diagram-arrow">⇄</div>
+
+                    <div class="diagram-file sequential-diagram">
+
+                        <div class="diagram-title">
+                            SEQUENTIAL
+                            <span>SORTED KEY</span>
+                        </div>
+
+                        <div class="mini-block">
+                            <b>BLOCK 00</b>
+                            <span>101</span>
+                            <span>103</span>
+                            <span>108</span>
+                        </div>
+
+                        <div class="mini-block">
+                            <b>BLOCK 01</b>
+                            <span>110</span>
+                            <span>115</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD STATS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">▣</div>
+
+                    <div>
+                        <span>RECORDS</span>
+                        <strong id="dashRecords">0</strong>
+                        <small>Current dataset</small>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon cyan">◈</div>
+
+                    <div>
+                        <span>OPERATIONS</span>
+                        <strong id="dashOperations">0</strong>
+                        <small>Executed operations</small>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">H</div>
+
+                    <div>
+                        <span>HEAP BLOCKS</span>
+                        <strong id="dashHeapBlocks">0</strong>
+                        <small>Storage blocks</small>
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">S</div>
+
+                    <div>
+                        <span>SEQ BLOCKS</span>
+                        <strong id="dashSeqBlocks">0</strong>
+                        <small>Storage blocks</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-columns">
+
+                <!-- STRATEGIES -->
+
+                <div class="panel">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span>CORE CONCEPT</span>
+                            <h3>Two storage strategies</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="strategy-cards">
+
+                        <div class="strategy-card">
+
+                            <div class="strategy-top">
+                                <div class="strategy-icon heap-icon">
+                                    H
+                                </div>
+
+                                <span class="strategy-tag">
+                                    UNSORTED
+                                </span>
+                            </div>
+
+                            <h4>Heap File</h4>
+
+                            <p>
+                                Records are stored without maintaining
+                                an ordering by key. New records are
+                                typically appended.
+                            </p>
+
+                            <div class="strategy-line">
+                                <span>Insertion</span>
+                                <b>Fast</b>
+                            </div>
+
+                            <div class="strategy-line">
+                                <span>Ordering</span>
+                                <b>None</b>
+                            </div>
+
+                        </div>
+
+
+                        <div class="strategy-card">
+
+                            <div class="strategy-top">
+                                <div class="strategy-icon seq-icon">
+                                    S
+                                </div>
+
+                                <span class="strategy-tag cyan-tag">
+                                    ORDERED
+                                </span>
+                            </div>
+
+                            <h4>Sequential File</h4>
+
+                            <p>
+                                Records are maintained according to
+                                a selected key, making ordered
+                                traversal natural.
+                            </p>
+
+                            <div class="strategy-line">
+                                <span>Insertion</span>
+                                <b>Ordered</b>
+                            </div>
+
+                            <div class="strategy-line">
+                                <span>Ordering</span>
+                                <b>By ID</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK LAB -->
+
+                <div class="panel">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span>QUICK LAB</span>
+                            <h3>Guided experiments</h3>
+                        </div>
+
+                    </div>
+
+                    <div class="experiment-list">
+
+                        <button onclick="loadExperiment(1)">
+                            <div>
+                                <small>EXPERIMENT 01</small>
+                                <b>Search Comparison</b>
+                            </div>
+                            <span>→</span>
+                        </button>
+
+                        <button onclick="loadExperiment(2)">
+                            <div>
+                                <small>EXPERIMENT 02</small>
+                                <b>Block Capacity</b>
+                            </div>
+                            <span>→</span>
+                        </button>
+
+                        <button onclick="loadExperiment(3)">
+                            <div>
+                                <small>EXPERIMENT 03</small>
+                                <b>Mixed Workload</b>
+                            </div>
+                            <span>→</span>
+                        </button>
+
+                        <button onclick="loadExperiment(4)">
+                            <div>
+                                <small>EXPERIMENT 04</small>
+                                <b>Ordered Search</b>
+                            </div>
+                            <span>→</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SIMULATOR
+        ====================================================== -->
+
+        <section class="page" id="simulator">
+
+            <div class="simulator-toolbar panel">
+
+                <div class="toolbar-title">
+
+                    <div class="live-indicator">
+                        <span></span>
+                        LIVE SIMULATION
+                    </div>
+
+                    <h3>File Organization Playground</h3>
+
+                    <p>
+                        Perform the same operations on both organizations
+                        and compare their behavior.
+                    </p>
+
+                </div>
+
+                <div class="toolbar-actions">
+
+                    <button class="secondary-btn"
+                            onclick="generateDataset()">
+                        ⟳ Generate Dataset
+                    </button>
+
+                    <button class="secondary-btn"
+                            onclick="openImport()">
+                        ↑ Import
+                    </button>
+
+                    <button class="secondary-btn"
+                            onclick="downloadReport()">
+                        ↓ Report
+                    </button>
+
+                    <input
+                        type="file"
+                        id="importFile"
+                        accept=".json"
+                        hidden
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- INPUT -->
+
+            <div class="panel input-panel">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span>RECORD OPERATIONS</span>
+                        <h3>Input Record</h3>
+                    </div>
+
+                    <span class="shortcut-hint">
+                        Enter a record and choose an operation
+                    </span>
+
+                </div>
+
+
+                <div class="record-form">
+
+                    <div class="field">
+                        <label>RECORD ID</label>
+                        <input
+                            id="recordId"
+                            type="number"
+                            placeholder="105"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>NAME</label>
+                        <input
+                            id="recordName"
+                            type="text"
+                            placeholder="Rahul"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>DEPARTMENT</label>
+                        <input
+                            id="recordDept"
+                            type="text"
+                            placeholder="CSE"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>MARKS</label>
+                        <input
+                            id="recordMarks"
+                            type="number"
+                            placeholder="85"
+                            min="0"
+                            max="100"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="operation-row">
+
+                    <button class="primary-btn"
+                            onclick="insertRecord()">
+                        + Insert
+                    </button>
+
+                    <button class="secondary-btn"
+                            onclick="startSearch()">
+                        ⌕ Search
+                    </button>
+
+                    <button class="secondary-btn delete-btn"
+                            onclick="deleteRecord()">
+                        × Delete
+                    </button>
+
+                </div>
+
+
+                <!-- CONFIG -->
+
+                <div class="configuration">
+
+                    <div class="config-item">
+
+                        <label>BLOCK CAPACITY</label>
+
+                        <div class="range-wrap">
+
+                            <input
+                                id="blockSize"
+                                type="range"
+                                min="2"
+                                max="8"
+                                value="4"
+                            >
+
+                            <b id="blockValue">4</b>
+
+                        </div>
+
+                        <small>
+                            Records per disk block
+                        </small>
+
+                    </div>
+
+
+                    <div class="config-item">
+
+                        <label>SEARCH STRATEGY</label>
+
+                        <select id="searchStrategy">
+
+                            <option value="scan">
+                                Sequential Scan
+                            </option>
+
+                            <option value="ordered">
+                                Ordered Search
+                            </option>
+
+                        </select>
+
+                        <small>
+                            Strategy used by the simulator
+                        </small>
+
+                    </div>
+
+
+                    <div class="config-item">
+
+                        <label>ANIMATION SPEED</label>
+
+                        <select id="speed">
+
+                            <option value="900">
+                                Slow
+                            </option>
+
+                            <option value="500" selected>
+                                Normal
+                            </option>
+
+                            <option value="180">
+                                Fast
+                            </option>
+
+                        </select>
+
+                        <small>
+                            Step visualization speed
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FILE VISUALIZATION -->
+
+            <div class="file-comparison">
+
+                <!-- HEAP -->
+
+                <div class="file-panel panel">
+
+                    <div class="file-header">
+
+                        <div class="file-heading">
+
+                            <div class="large-file-icon heap-icon">
+                                H
+                            </div>
+
+                            <div>
+                                <span>FILE ORGANIZATION A</span>
+                                <h3>Heap File</h3>
+                                <small>
+                                    Records remain in insertion order
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                        <div class="file-stats">
+
+                            <div>
+                                <span>RECORDS</span>
+                                <b id="heapCount">0</b>
+                            </div>
+
+                            <div>
+                                <span>BLOCKS</span>
+                                <b id="heapBlocks">0</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="file-path">
+                        HEAD → BLOCKS → RECORDS
+                    </div>
+
+
+                    <div class="blocks" id="heapBlocksView"></div>
+
+                </div>
+
+
+                <!-- SEQUENTIAL -->
+
+                <div class="file-panel panel">
+
+                    <div class="file-header">
+
+                        <div class="file-heading">
+
+                            <div class="large-file-icon seq-icon">
+                                S
+                            </div>
+
+                            <div>
+                                <span>FILE ORGANIZATION B</span>
+                                <h3>Sequential File</h3>
+                                <small>
+                                    Records maintained in ID order
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                        <div class="file-stats">
+
+                            <div>
+                                <span>RECORDS</span>
+                                <b id="seqCount">0</b>
+                            </div>
+
+                            <div>
+                                <span>BLOCKS</span>
+                                <b id="seqBlocks">0</b>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="file-path">
+                        BLOCKS → SORTED RECORDS → KEY ORDER
+                    </div>
+
+
+                    <div class="blocks" id="seqBlocksView"></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH CONTROLS -->
+
+            <div class="panel playback-panel">
+
+                <div>
+
+                    <span class="eyebrow">EXECUTION CONTROL</span>
+
+                    <h3 id="playbackTitle">
+                        No active simulation
+                    </h3>
+
+                </div>
+
+
+                <div class="playback-progress">
+
+                    <div class="progress-track">
+                        <i id="progressBar"></i>
+                    </div>
+
+                    <span id="stepLabel">
+                        0 / 0
+                    </span>
+
+                </div>
+
+
+                <div class="playback-actions">
+
+                    <button
+                        class="circle-btn"
+                        onclick="previousStep()">
+                        ‹
+                    </button>
+
+                    <button
+                        class="play-btn"
+                        id="playBtn"
+                        onclick="togglePlayback()">
+                        ▶
+                    </button>
+
+                    <button
+                        class="circle-btn"
+                        onclick="nextStep()">
+                        ›
+                    </button>
+
+                    <button
+                        class="reset-playback"
+                        onclick="resetPlayback()">
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ANALYSIS -->
+
+            <div class="analysis-grid">
+
+                <div class="panel">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span>OPERATION ANALYSIS</span>
+                            <h3>Latest Result</h3>
+                        </div>
+
+                        <span id="operationStatus"
+                              class="result-status">
+                            IDLE
+                        </span>
+
+                    </div>
+
+                    <div id="resultBox" class="result-content">
+
+                        <div class="empty-result">
+                            <div>⌁</div>
+                            <p>
+                                Run an operation to view detailed
+                                simulation statistics.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel explanation-panel">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span>INTELLIGENT EXPLANATION</span>
+                            <h3>What's happening?</h3>
+                        </div>
+
+                        <span class="ai-badge">
+                            AI GUIDE
+                        </span>
+
+                    </div>
+
+                    <div id="explanation">
+
+                        <p>
+                            The explanation engine will describe each
+                            operation and why the two file organizations
+                            behave differently.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY LOG -->
+
+            <div class="panel">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span>SYSTEM ACTIVITY</span>
+                        <h3>Simulation Log</h3>
+                    </div>
+
+                    <button class="text-btn"
+                            onclick="clearLog()">
+                        Clear log
+                    </button>
+
+                </div>
+
+                <div id="log" class="activity-log"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ANALYTICS
+        ====================================================== -->
+
+        <section class="page" id="analytics">
+
+            <div class="page-intro">
+
+                <span class="eyebrow">
+                    PERFORMANCE LAB
+                </span>
+
+                <h2>Analytics & Comparison</h2>
+
+                <p>
+                    Observe how the two organizations behave across
+                    simulated operations.
+                </p>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">H</div>
+                    <div>
+                        <span>HEAP COMPARISONS</span>
+                        <strong id="analyticsHeap">0</strong>
+                        <small>Total comparisons</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon cyan">S</div>
+                    <div>
+                        <span>SEQ COMPARISONS</span>
+                        <strong id="analyticsSeq">0</strong>
+                        <small>Total comparisons</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">H</div>
+                    <div>
+                        <span>HEAP BLOCK ACCESS</span>
+                        <strong id="analyticsHeapBlocks">0</strong>
+                        <small>Simulated accesses</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">S</div>
+                    <div>
+                        <span>SEQ BLOCK ACCESS</span>
+                        <strong id="analyticsSeqBlocks">0</strong>
+                        <small>Simulated accesses</small>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="analytics-grid">
+
+                <div class="panel">
+
+                    <div class="section-heading">
+                        <div>
+                            <span>COMPARISON</span>
+                            <h3>Record Comparisons</h3>
+                        </div>
+                    </div>
+
+                    <div class="bar-chart">
+
+                        <div class="bar-row">
+
+                            <div class="bar-label">
+                                <span class="legend-dot purple-dot"></span>
+                                Heap
+                            </div>
+
+                            <div class="bar-track">
+                                <i id="heapBar"></i>
+                            </div>
+
+                            <b id="heapBarValue">0</b>
+
+                        </div>
+
+
+                        <div class="bar-row">
+
+                            <div class="bar-label">
+                                <span class="legend-dot cyan-dot"></span>
+                                Sequential
+                            </div>
+
+                            <div class="bar-track">
+                                <i id="seqBar"></i>
+                            </div>
+
+                            <b id="seqBarValue">0</b>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="section-heading">
+                        <div>
+                            <span>ALGORITHM GUIDE</span>
+                            <h3>Complexity Reference</h3>
+                        </div>
+                    </div>
+
+                    <table class="complexity-table">
+
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Heap</th>
+                                <th>Sequential</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>Insert</td>
+                                <td>O(1)*</td>
+                                <td>O(n)</td>
+                            </tr>
+
+                            <tr>
+                                <td>Search</td>
+                                <td>O(n)</td>
+                                <td>O(n)</td>
+                            </tr>
+
+                            <tr>
+                                <td>Delete</td>
+                                <td>O(n)</td>
+                                <td>O(n)</td>
+                            </tr>
+
+                            <tr>
+                                <td>Traversal</td>
+                                <td>O(n)</td>
+                                <td>O(n)</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <small class="complexity-note">
+                        *Typical append operation when space is available.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- WORKLOAD -->
+
+            <div class="panel workload-panel">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span>BENCHMARK</span>
+                        <h3>Run Same Workload</h3>
+                    </div>
+
+                    <button class="primary-btn"
+                            onclick="runWorkload()">
+                        Run Benchmark →
+                    </button>
+
+                </div>
+
+                <p class="muted-text">
+                    Run identical search operations against both
+                    file organizations and compare simulated work.
+                </p>
+
+                <div id="workloadResult"
+                     class="workload-result">
+
+                    <div class="empty-result">
+                        <p>
+                            No benchmark has been executed yet.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             HISTORY
+        ====================================================== -->
+
+        <section class="page" id="history">
+
+            <div class="page-intro">
+
+                <span class="eyebrow">PERSISTENCE</span>
+
+                <h2>Simulation History</h2>
+
+                <p>
+                    Saved experiments are stored locally in your browser.
+                </p>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span>SAVED SESSIONS</span>
+                        <h3>Your simulations</h3>
+                    </div>
+
+                    <button class="secondary-btn"
+                            onclick="saveSimulation()">
+                        + Save Current
+                    </button>
+
+                </div>
+
+                <div id="historyList"
+                     class="history-list">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             LEARN
+        ====================================================== -->
+
+        <section class="page" id="learn">
+
+            <div class="learn-header">
+
+                <span class="status-badge">
+                    DBMS CONCEPT LAB
+                </span>
+
+                <h2>
+                    Learn the storage model
+                </h2>
+
+                <p>
+                    Understand the concepts before experimenting
+                    with the simulator.
+                </p>
+
+            </div>
+
+
+            <div class="learn-grid">
+
+                <article class="learn-card">
+
+                    <span>01</span>
+
+                    <h3>File Organization</h3>
+
+                    <p>
+                        File organization describes how records are
+                        arranged and stored in secondary storage.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>02</span>
+
+                    <h3>Heap Files</h3>
+
+                    <p>
+                        A heap file does not maintain records in a
+                        particular key order. New records can typically
+                        be appended.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>03</span>
+
+                    <h3>Sequential Files</h3>
+
+                    <p>
+                        A sequential file maintains records according
+                        to a selected ordering key.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>04</span>
+
+                    <h3>Disk Blocks</h3>
+
+                    <p>
+                        Databases transfer data between secondary
+                        storage and memory in blocks or pages.
+                        FILEFORGE models this behavior visually.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>05</span>
+
+                    <h3>Searching</h3>
+
+                    <p>
+                        Searching can require examining multiple records.
+                        The simulator counts comparisons and simulated
+                        block accesses.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>06</span>
+
+                    <h3>Insertion</h3>
+
+                    <p>
+                        Heap insertion can append a record, while
+                        sequential organization may need to maintain
+                        key ordering.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>07</span>
+
+                    <h3>Deletion</h3>
+
+                    <p>
+                        Deletion requires locating the record and
+                        updating the file representation.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>08</span>
+
+                    <h3>Block Capacity</h3>
+
+                    <p>
+                        Changing block capacity lets you observe how
+                        the number of storage blocks changes for the
+                        same dataset.
+                    </p>
+
+                </article>
+
+
+                <article class="learn-card">
+
+                    <span>09</span>
+
+                    <h3>Real Applications</h3>
+
+                    <p>
+                        Different storage organizations can be selected
+                        depending on workloads such as frequent
+                        insertion or ordered access.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             QUIZ
+        ====================================================== -->
+
+        <section class="page" id="quiz">
+
+            <div class="page-intro">
+
+                <span class="eyebrow">KNOWLEDGE CHECK</span>
+
+                <h2>DBMS Quick Quiz</h2>
+
+                <p>
+                    Test your understanding of Heap and Sequential files.
+                </p>
+
+            </div>
+
+
+            <div class="quiz-container panel">
+
+                <div class="quiz-progress">
+
+                    <span id="quizNumber">
+                        Question 1 of 5
+                    </span>
+
+                    <div>
+                        <i id="quizProgress"></i>
+                    </div>
+
+                </div>
+
+
+                <h3 id="quizQuestion">
+                    Loading question...
+                </h3>
+
+
+                <div id="quizOptions"
+                     class="quiz-options">
+                </div>
+
+
+                <div class="quiz-footer">
+
+                    <span id="quizScore">
+                        Score: 0
+                    </span>
+
+                    <button class="primary-btn"
+                            id="quizNextBtn"
+                            onclick="nextQuizQuestion()">
+                        Next →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ABOUT
+        ====================================================== -->
+
+        <section class="page" id="about">
+
+            <div class="about-card panel">
+
+                <div class="about-mark">
+                    ◆
+                </div>
+
+                <span class="status-badge">
+                    DBMS VIRTUAL LAB
+                </span>
+
+                <h2>FILEFORGE</h2>
+
+                <p>
+                    Heap vs Sequential File Organization
+                    Interactive Simulator
+                </p>
+
+                <div class="about-tags">
+
+                    <span>MODULE 04</span>
+                    <span>FILE ORGANIZATION</span>
+                    <span>INTERACTIVE LAB</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-columns">
+
+                <div class="panel">
+
+                    <span class="eyebrow">
+                        PROJECT OBJECTIVE
+                    </span>
+
+                    <h3>Learn through experimentation</h3>
+
+                    <p class="large-paragraph">
+                        FILEFORGE converts database file organization
+                        theory into an interactive environment where
+                        learners can insert, search, delete, visualize,
+                        compare and analyze records.
+                    </p>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <span class="eyebrow">
+                        TECHNOLOGY
+                    </span>
+
+                    <h3>Frontend Architecture</h3>
+
+                    <div class="tech-stack">
+
+                        <span>HTML5</span>
+                        <span>CSS3</span>
+                        <span>JavaScript</span>
+                        <span>Local Storage</span>
+                        <span>Responsive UI</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
