@@ -596,12 +596,20 @@
 
                         <select id="searchStrategy">
 
+                            <option value="binary" selected>
+                                Binary Search (Sequential O(log N))
+                            </option>
+
+                            <option value="race">
+                                🏁 Dual Race Mode (Side-by-Side)
+                            </option>
+
                             <option value="scan">
-                                Sequential Scan
+                                Sequential Scan (Linear O(N))
                             </option>
 
                             <option value="ordered">
-                                Ordered Search
+                                Ordered Scan (Sequential early stop)
                             </option>
 
                         </select>
@@ -637,6 +645,52 @@
                             Step visualization speed
                         </small>
 
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STORAGE UTILIZATION & INTERNAL FRAGMENTATION -->
+
+            <div class="panel storage-health-panel">
+
+                <div class="storage-health-header">
+                    <div>
+                        <span class="eyebrow">STORAGE ARCHITECTURE & I/O MODEL</span>
+                        <h3>Disk Block Utilization & Internal Fragmentation</h3>
+                    </div>
+
+                    <div class="efficiency-pill">
+                        Packing Factor: <strong id="packingFactor">100%</strong>
+                    </div>
+                </div>
+
+                <div class="storage-metrics-grid">
+
+                    <div class="storage-metric-card">
+                        <span class="metric-label">TOTAL ALLOCATED CAPACITY</span>
+                        <div class="metric-val"><span id="totalCapacitySlots">0</span> <small>slots</small></div>
+                        <span class="metric-sub" id="allocatedBlocksSummary">0 blocks × 4 slots</span>
+                    </div>
+
+                    <div class="storage-metric-card">
+                        <span class="metric-label">ACTIVE STORED RECORDS</span>
+                        <div class="metric-val"><span id="activeRecordsCount">0</span> <small>records</small></div>
+                        <span class="metric-sub">Across primary file blocks</span>
+                    </div>
+
+                    <div class="storage-metric-card">
+                        <span class="metric-label">INTERNAL FRAGMENTATION</span>
+                        <div class="metric-val"><span id="wastedSlotsCount">0</span> <small>wasted slots</small></div>
+                        <span class="metric-sub" id="fragmentationPct">0% wasted disk space</span>
+                    </div>
+
+                    <div class="storage-metric-card">
+                        <span class="metric-label">THEORETICAL I/O TRANSFER COST</span>
+                        <div class="metric-val"><span id="binaryCostEstimate">O(log₂ B)</span></div>
+                        <span class="metric-sub" id="binaryIoFormula">≤ 0 block I/Os (Binary Search)</span>
                     </div>
 
                 </div>
@@ -851,11 +905,11 @@
 
                         <div>
                             <span>INTELLIGENT EXPLANATION</span>
-                            <h3>What's happening?</h3>
+                            <h3>Contextual Analysis</h3>
                         </div>
 
                         <span class="ai-badge">
-                            AI GUIDE
+                            ✨ AI GUIDE
                         </span>
 
                     </div>
@@ -867,6 +921,57 @@
                             operation and why the two file organizations
                             behave differently.
                         </p>
+
+                    </div>
+
+                    <!-- INTERACTIVE AI TUTOR & QUERY ASSISTANT -->
+                    <div class="ai-tutor-box">
+
+                        <div class="ai-tutor-header">
+                            <div class="ai-tutor-title">
+                                <span class="ai-sparkle">✦</span>
+                                <h4>Ask AI Tutor</h4>
+                            </div>
+                            <span class="ai-sublabel">Interactive DBMS Guidance</span>
+                        </div>
+
+                        <div class="ai-chips">
+                            <button class="ai-chip" onclick="askAiTutor('binary_vs_linear')">
+                                💡 Why is Binary Search faster?
+                            </button>
+                            <button class="ai-chip" onclick="askAiTutor('block_capacity')">
+                                💡 Effect of Block Capacity (2 vs 8)
+                            </button>
+                            <button class="ai-chip" onclick="askAiTutor('heap_vs_seq')">
+                                💡 When to choose Heap vs Sequential?
+                            </button>
+                            <button class="ai-chip" onclick="askAiTutor('fragmentation')">
+                                💡 What is Internal Fragmentation?
+                            </button>
+                            <button class="ai-chip" onclick="askAiTutor('deletion')">
+                                💡 Record Deletion & Shifting Cost
+                            </button>
+                        </div>
+
+                        <div class="ai-input-row">
+                            <input
+                                type="text"
+                                id="aiCustomQuery"
+                                placeholder="Ask any DBMS file organization question..."
+                                onkeydown="if(event.key==='Enter') submitAiQuery()"
+                            >
+                            <button class="primary-btn ai-ask-btn" onclick="submitAiQuery()">
+                                Ask AI ↵
+                            </button>
+                        </div>
+
+                        <div id="aiTutorResponse" class="ai-chat-bubble" style="display:none;">
+                            <div class="ai-bubble-header">
+                                <span>✦ AI TUTOR RESPONSE</span>
+                                <button class="ai-close-btn" onclick="$('aiTutorResponse').style.display='none'">✕</button>
+                            </div>
+                            <div id="aiTutorResponseText" class="ai-bubble-body"></div>
+                        </div>
 
                     </div>
 
@@ -1026,35 +1131,41 @@
                         <thead>
                             <tr>
                                 <th>Operation</th>
-                                <th>Heap</th>
-                                <th>Sequential</th>
+                                <th>Heap File</th>
+                                <th>Sequential File</th>
                             </tr>
                         </thead>
 
                         <tbody>
 
                             <tr>
-                                <td>Insert</td>
-                                <td>O(1)*</td>
-                                <td>O(n)</td>
+                                <td>Key Search (Probes)</td>
+                                <td>O(n) [avg n/2]</td>
+                                <td><strong>O(log₂ n)</strong> [Binary Search]</td>
                             </tr>
 
                             <tr>
-                                <td>Search</td>
-                                <td>O(n)</td>
-                                <td>O(n)</td>
+                                <td>Search Block I/O</td>
+                                <td>avg b/2 disk blocks</td>
+                                <td><strong>⌈log₂ b⌉</strong> disk blocks</td>
                             </tr>
 
                             <tr>
-                                <td>Delete</td>
-                                <td>O(n)</td>
-                                <td>O(n)</td>
+                                <td>Insert Record</td>
+                                <td><strong>O(1)</strong> (2 I/Os: append)</td>
+                                <td>O(n) (b I/Os: search + record shift)</td>
                             </tr>
 
                             <tr>
-                                <td>Traversal</td>
-                                <td>O(n)</td>
-                                <td>O(n)</td>
+                                <td>Delete Record</td>
+                                <td>O(n) (b/2 read + 1 write)</td>
+                                <td>O(n) (b I/Os: search + record shift)</td>
+                            </tr>
+
+                            <tr>
+                                <td>Ordered Scan / Range</td>
+                                <td>O(n log n) (needs sort)</td>
+                                <td><strong>O(n)</strong> (b sequential I/Os)</td>
                             </tr>
 
                         </tbody>
@@ -1062,7 +1173,7 @@
                     </table>
 
                     <small class="complexity-note">
-                        *Typical append operation when space is available.
+                        *b = total disk blocks; n = total records. Sequential utilizes Binary Search over sorted key blocks.
                     </small>
 
                 </div>

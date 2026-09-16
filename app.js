@@ -329,15 +329,20 @@ function renderFile(data,container){
     const blocks =
         splitBlocks(data);
 
+    const bCapacity =
+        getBlockSize();
+
 
     blocks.forEach(
         (records,index) => {
+
+            const isFull = records.length === bCapacity;
 
             const block =
                 document.createElement("div");
 
             block.className =
-                "block";
+                `block ${isFull ? "block-full" : "block-partial"}`;
 
             block.dataset.block =
                 index;
@@ -346,13 +351,17 @@ function renderFile(data,container){
             block.innerHTML =
                 `<div class="block-header">
                     <span>
-                        BLOCK ${String(index)
-                            .padStart(2,"0")}
+                        BLOCK ${String(index).padStart(2,"0")}
                     </span>
 
-                    <span>
-                        ${records.length}/${getBlockSize()}
-                    </span>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="block-tag ${isFull ? 'full' : 'partial'}">
+                            ${isFull ? 'FULL' : 'PARTIAL'}
+                        </span>
+                        <span class="block-cap">
+                            ${records.length}/${bCapacity}
+                        </span>
+                    </div>
                 </div>`;
 
 
@@ -383,6 +392,24 @@ function renderFile(data,container){
             });
 
 
+            /* RENDER EMPTY SLOTS (INTERNAL FRAGMENTATION) */
+            for(let emptyIdx = records.length; emptyIdx < bCapacity; emptyIdx++){
+
+                const emptySlot =
+                    document.createElement("div");
+
+                emptySlot.className =
+                    "record empty-slot";
+
+                emptySlot.innerHTML =
+                    `<strong>⬚ Slot ${emptyIdx + 1} (Empty)</strong>
+                    <small>Internal Fragmentation</small>`;
+
+                block.appendChild(emptySlot);
+
+            }
+
+
             container.appendChild(block);
 
         }
@@ -404,22 +431,22 @@ function escapeHTML(value){
 
 
 /* =========================================================
-   STATS
+   STATS & STORAGE UTILIZATION
 ========================================================= */
 
 function updateStats(){
 
+    const bSize = getBlockSize();
+
     const heapBlockCount =
         Math.ceil(
-            heap.length /
-            getBlockSize()
-        );
+            heap.length / bSize
+        ) || 0;
 
     const seqBlockCount =
         Math.ceil(
-            sequential.length /
-            getBlockSize()
-        );
+            sequential.length / bSize
+        ) || 0;
 
 
     $("heapCount").textContent =
@@ -459,6 +486,67 @@ function updateStats(){
 
     $("analyticsSeqBlocks").textContent =
         stats.seqBlocks;
+
+
+    /* STORAGE UTILIZATION & INTERNAL FRAGMENTATION METRICS */
+    const totalCapacity =
+        heapBlockCount * bSize;
+
+    const wastedSlots =
+        Math.max(0, totalCapacity - heap.length);
+
+    const packingFactor =
+        totalCapacity > 0
+            ? Math.round((heap.length / totalCapacity) * 100)
+            : 100;
+
+    const fragPct =
+        totalCapacity > 0
+            ? Math.round((wastedSlots / totalCapacity) * 100)
+            : 0;
+
+    const maxProbes =
+        Math.ceil(Math.log2(Math.max(1, heap.length)));
+
+    const maxIo =
+        Math.ceil(Math.log2(Math.max(1, heapBlockCount)));
+
+
+    if($("packingFactor")){
+        $("packingFactor").textContent = `${packingFactor}%`;
+    }
+
+    if($("totalCapacitySlots")){
+        $("totalCapacitySlots").textContent = totalCapacity;
+    }
+
+    if($("activeRecordsCount")){
+        $("activeRecordsCount").textContent = heap.length;
+    }
+
+    if($("wastedSlotsCount")){
+        $("wastedSlotsCount").textContent = wastedSlots;
+    }
+
+    if($("allocatedBlocksSummary")){
+        $("allocatedBlocksSummary").textContent =
+            `${heapBlockCount} blocks × ${bSize} slot capacity`;
+    }
+
+    if($("fragmentationPct")){
+        $("fragmentationPct").textContent =
+            `${fragPct}% wasted disk space`;
+    }
+
+    if($("binaryCostEstimate")){
+        $("binaryCostEstimate").textContent =
+            `≤ ${maxProbes} Probes`;
+    }
+
+    if($("binaryIoFormula")){
+        $("binaryIoFormula").textContent =
+            `≤ ${maxIo} block I/Os (Binary Search)`;
+    }
 
 
     const max =
@@ -722,81 +810,193 @@ function buildSearchSteps(id,strategy){
 
     const steps = [];
 
+    /* HEAP PROBES (Linear Scan) */
+    const heapProbes = [];
+    let heapFound = false;
 
-    /* HEAP */
+    for(let i = 0; i < heap.length; i++){
+        const r = heap[i];
+        const isMatch = r.id === id;
+        heapProbes.push({
+            file: "heap",
+            index: i,
+            id: r.id,
+            status: isMatch ? "found" : "checking",
+            message: isMatch
+                ? `Record ${r.id} FOUND in Heap at Block ${String(Math.floor(i / getBlockSize())).padStart(2,"0")} (Index ${i})`
+                : `Checking Heap Record ${r.id} (Index ${i})...`
+        });
 
-    heap.forEach(
-        (record,index) => {
-
-            steps.push({
-
-                file:"heap",
-
-                index,
-
-                id:record.id,
-
-                status:
-                    record.id === id
-                        ? "found"
-                        : "checking"
-
-            });
-
-
-            if(record.id === id)
-                return;
-
+        if(isMatch){
+            heapFound = true;
+            break;
         }
-    );
+    }
+
+    if(!heapFound && heap.length > 0){
+        heapProbes.push({
+            file: "heap",
+            index: heap.length - 1,
+            id: null,
+            status: "not_found",
+            message: `Record ${id} NOT found in Heap after scanning all ${heap.length} records.`
+        });
+    }
 
 
-    /* SEQUENTIAL */
+    /* SEQUENTIAL PROBES */
+    const seqProbes = [];
 
-    sequential.forEach(
-        (record,index) => {
+    if(strategy === "binary" || strategy === "race"){
 
-            steps.push({
+        let low = 0;
+        let high = sequential.length - 1;
+        let seqFound = false;
 
-                file:"seq",
+        while(low <= high){
+            const mid = Math.floor((low + high) / 2);
+            const r = sequential[mid];
+            const isMatch = r.id === id;
+            const bIndex = Math.floor(mid / getBlockSize());
 
-                index,
-
-                id:record.id,
-
-                status:
-                    record.id === id
-                        ? "found"
-                        : "checking"
-
-            });
-
-
-            if(
-                strategy === "ordered" &&
-                record.id > id
-            ){
-
-                steps.push({
-
-                    file:"seq",
-
-                    index,
-
-                    id:record.id,
-
-                    status:"stop"
-
-                });
-
+            let msg = "";
+            if(isMatch){
+                msg = `🎯 Record ${r.id} FOUND via Binary Search at Index ${mid} (Block ${String(bIndex).padStart(2,"0")})!`;
+            } else if(r.id < id){
+                msg = `Binary Search: Probed ${r.id} < ${id} → Target in upper partition [${mid + 1}..${high}]`;
+            } else {
+                msg = `Binary Search: Probed ${r.id} > ${id} → Target in lower partition [${low}..${mid - 1}]`;
             }
 
-        }
-    );
+            seqProbes.push({
+                file: "seq",
+                index: mid,
+                id: r.id,
+                low,
+                high,
+                mid,
+                blockIndex: bIndex,
+                strategy: "binary",
+                status: isMatch ? "found" : "checking",
+                message: msg
+            });
 
+            if(isMatch){
+                seqFound = true;
+                break;
+            } else if(r.id < id){
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        if(!seqFound && sequential.length > 0){
+            seqProbes.push({
+                file: "seq",
+                index: -1,
+                id: null,
+                low,
+                high,
+                mid: -1,
+                strategy: "binary",
+                status: "not_found",
+                message: `Record ${id} NOT found in Sequential file via Binary Search (Search space exhausted).`
+            });
+        }
+
+    } else if(strategy === "ordered"){
+
+        let seqFound = false;
+        for(let i = 0; i < sequential.length; i++){
+            const r = sequential[i];
+            const isMatch = r.id === id;
+
+            if(isMatch){
+                seqProbes.push({
+                    file: "seq",
+                    index: i,
+                    id: r.id,
+                    status: "found",
+                    message: `Record ${r.id} FOUND in Sequential file at Index ${i}!`
+                });
+                seqFound = true;
+                break;
+            } else if(r.id > id){
+                seqProbes.push({
+                    file: "seq",
+                    index: i,
+                    id: r.id,
+                    status: "stop",
+                    message: `Ordered Stop: Record ${r.id} > ${id}. Target does not exist!`
+                });
+                seqFound = false;
+                break;
+            } else {
+                seqProbes.push({
+                    file: "seq",
+                    index: i,
+                    id: r.id,
+                    status: "checking",
+                    message: `Checking Sequential Record ${r.id} (Index ${i})...`
+                });
+            }
+        }
+
+    } else {
+
+        /* Sequential Scan */
+        for(let i = 0; i < sequential.length; i++){
+            const r = sequential[i];
+            const isMatch = r.id === id;
+            seqProbes.push({
+                file: "seq",
+                index: i,
+                id: r.id,
+                status: isMatch ? "found" : "checking",
+                message: isMatch
+                    ? `Record ${r.id} FOUND in Sequential file at Index ${i}!`
+                    : `Checking Sequential Record ${r.id} (Index ${i})...`
+            });
+            if(isMatch) break;
+        }
+
+    }
+
+
+    /* STRATEGY ROUTING */
+    if(strategy === "race"){
+
+        const maxRounds = Math.max(heapProbes.length, seqProbes.length);
+        for(let r = 0; r < maxRounds; r++){
+            const hStep = r < heapProbes.length
+                ? heapProbes[r]
+                : { file: "heap", done: true, status: heapProbes[heapProbes.length - 1]?.status || "done", id: heapProbes[heapProbes.length - 1]?.id };
+
+            const sStep = r < seqProbes.length
+                ? seqProbes[r]
+                : { file: "seq", done: true, status: seqProbes[seqProbes.length - 1]?.status || "done", id: seqProbes[seqProbes.length - 1]?.id };
+
+            steps.push({
+                isRace: true,
+                round: r + 1,
+                totalRounds: maxRounds,
+                heapStep: hStep,
+                seqStep: sStep,
+                heapProbesCount: Math.min(r + 1, heapProbes.length),
+                seqProbesCount: Math.min(r + 1, seqProbes.length)
+            });
+        }
+
+    } else {
+
+        /* Phased Playback: Heap phase first, then Sequential phase */
+        heapProbes.forEach(step => steps.push(step));
+        seqProbes.forEach(step => steps.push(step));
+
+    }
 
     return steps;
-
 }
 
 
@@ -812,10 +1012,8 @@ function updatePlaybackUI(){
     const current =
         playback.current + 1;
 
-
     $("stepLabel").textContent =
         `${Math.max(0,current)} / ${total}`;
-
 
     const percent =
         total
@@ -823,76 +1021,157 @@ function updatePlaybackUI(){
                 0,
                 Math.min(
                     100,
-                    current/total*100
+                    (current / total) * 100
                 )
             )
             : 0;
 
-
     $("progressBar").style.width =
         `${percent}%`;
 
-
     clearHighlights();
-
 
     if(
         playback.current < 0 ||
-        !playback.steps[
-            playback.current
-        ]
+        !playback.steps[playback.current]
     ){
-
         return;
     }
 
-
     const step =
-        playback.steps[
-            playback.current
-        ];
+        playback.steps[playback.current];
 
+    if(step.isRace){
 
-    const container =
-        step.file === "heap"
-            ? $("heapBlocksView")
-            : $("seqBlocksView");
+        /* RACE MODE PLAYBACK */
+        const h = step.heapStep;
+        const s = step.seqStep;
 
+        if(!h.done && h.index !== undefined){
+            const hRecords =
+                $("heapBlocksView").querySelectorAll(".record");
 
-    const records =
-        container.querySelectorAll(
-            ".record"
-        );
+            if(hRecords[h.index]){
+                hRecords[h.index].classList.add(
+                    h.status === "found" ? "found" : "checking"
+                );
+                const blk = hRecords[h.index].closest(".block");
+                if(blk) blk.classList.add("active");
+            }
+        }
 
+        if(!s.done && s.index !== undefined && s.index >= 0){
+            const sRecords =
+                $("seqBlocksView").querySelectorAll(".record");
 
-    if(records[step.index]){
+            if(sRecords[s.index]){
+                sRecords[s.index].classList.add(
+                    s.status === "found" ? "found" : "mid-ptr"
+                );
+                sRecords[s.index].classList.add(
+                    s.status === "found" ? "found" : "checking"
+                );
+                const blk = sRecords[s.index].closest(".block");
+                if(blk) blk.classList.add("active");
+            }
 
-        records[step.index]
-            .classList.add(
+            if(s.low !== undefined && s.high !== undefined){
+                if(sRecords[s.low]){
+                    sRecords[s.low].classList.add("low-ptr");
+                    attachPtrBadge(sRecords[s.low], "L", "low");
+                }
+                if(sRecords[s.mid] && s.status !== "found"){
+                    attachPtrBadge(sRecords[s.mid], "MID", "mid");
+                }
+                if(sRecords[s.high]){
+                    sRecords[s.high].classList.add("high-ptr");
+                    attachPtrBadge(sRecords[s.high], "R", "high");
+                }
+                sRecords.forEach((rec, idx) => {
+                    if(idx < s.low || idx > s.high){
+                        rec.classList.add("range-excluded");
+                    }
+                });
+            }
+        }
+
+        let titleText = `🏁 Race Step ${step.round}/${step.totalRounds} — `;
+        if(s.status === "found" && h.status !== "found"){
+            titleText += `⚡ Sequential Binary Search WON! (Found in ${step.seqProbesCount} probes; Heap at probe ${step.heapProbesCount})`;
+        } else if(h.status === "found" && s.status !== "found"){
+            titleText += `Heap Linear Scan found first (Found in ${step.heapProbesCount} probes; Sequential at probe ${step.seqProbesCount})`;
+        } else if(h.status === "found" && s.status === "found"){
+            titleText += `Both finished! Heap: ${step.heapProbesCount} probes | Sequential: ${step.seqProbesCount} probes`;
+        } else {
+            titleText += `Heap Linear (Probe ${step.heapProbesCount}) vs Sequential Binary (Probe ${step.seqProbesCount})`;
+        }
+        $("playbackTitle").textContent = titleText;
+
+    } else {
+
+        /* PHASED PLAYBACK */
+        const container =
+            step.file === "heap"
+                ? $("heapBlocksView")
+                : $("seqBlocksView");
+
+        const records =
+            container.querySelectorAll(".record");
+
+        if(step.index !== undefined && step.index >= 0 && records[step.index]){
+            records[step.index].classList.add(
                 step.status === "found"
                     ? "found"
-                    : "checking"
+                    : (step.status === "stop" ? "checking" : "checking")
             );
 
+            const block =
+                records[step.index].closest(".block");
 
-        const block =
-            records[step.index]
-                .closest(".block");
+            if(block) block.classList.add("active");
+        }
 
+        if(step.file === "seq" && step.strategy === "binary"){
+            if(step.low !== undefined && step.high !== undefined){
+                if(records[step.low]){
+                    records[step.low].classList.add("low-ptr");
+                    attachPtrBadge(records[step.low], "L", "low");
+                }
+                if(records[step.mid] && step.status !== "found"){
+                    records[step.mid].classList.add("mid-ptr");
+                    attachPtrBadge(records[step.mid], "MID", "mid");
+                }
+                if(records[step.high]){
+                    records[step.high].classList.add("high-ptr");
+                    attachPtrBadge(records[step.high], "R", "high");
+                }
+                records.forEach((rec, idx) => {
+                    if(idx < step.low || idx > step.high){
+                        rec.classList.add("range-excluded");
+                    }
+                });
+            }
+        }
 
-        if(block)
-            block.classList.add("active");
+        $("playbackTitle").textContent =
+            step.message || (
+                step.status === "found"
+                    ? `Record ${step.id} found in ${step.file === "heap" ? "Heap" : "Sequential"}`
+                    : step.status === "stop"
+                        ? `Ordered search stopped at ${step.id}`
+                        : `Checking ${step.file === "heap" ? "Heap" : "Sequential"} Record ${step.id}`
+            );
 
     }
 
+}
 
-    $("playbackTitle").textContent =
-        step.status === "found"
-            ? `Record ${step.id} found in ${step.file === "heap" ? "Heap" : "Sequential"}`
-            : step.status === "stop"
-                ? `Ordered search stopped at ${step.id}`
-                : `Checking Record ${step.id}`;
 
+function attachPtrBadge(element, text, className){
+    const badge = document.createElement("span");
+    badge.className = `ptr-badge ${className}`;
+    badge.textContent = text;
+    element.appendChild(badge);
 }
 
 
@@ -900,17 +1179,23 @@ function clearHighlights(){
 
     document
         .querySelectorAll(
-            ".record.checking, .record.found, .block.active"
+            ".record.checking, .record.found, .block.active, .record.low-ptr, .record.mid-ptr, .record.high-ptr, .record.range-excluded"
         )
         .forEach(item => {
-
             item.classList.remove(
                 "checking",
                 "found",
-                "active"
+                "active",
+                "low-ptr",
+                "mid-ptr",
+                "high-ptr",
+                "range-excluded"
             );
-
         });
+
+    document
+        .querySelectorAll(".ptr-badge")
+        .forEach(badge => badge.remove());
 
 }
 
@@ -918,41 +1203,17 @@ function clearHighlights(){
 function nextStep(){
 
     if(!playback.active){
-
-        toast(
-            "Start a search first.",
-            "info"
-        );
-
+        toast("Start a search first.", "info");
         return;
     }
 
-
-    if(
-        playback.current >=
-        playback.steps.length - 1
-    ){
-
+    if(playback.current >= playback.steps.length - 1){
         finishSearch();
-
         return;
     }
-
 
     playback.current++;
-
     updatePlaybackUI();
-
-
-    if(
-        playback.steps[
-            playback.current
-        ].status === "found"
-    ){
-
-        finishSearch();
-
-    }
 
 }
 
@@ -961,7 +1222,6 @@ function previousStep(){
 
     if(!playback.active)
         return;
-
 
     if(playback.current > 0)
         playback.current--;
@@ -974,33 +1234,18 @@ function previousStep(){
 function togglePlayback(){
 
     if(!playback.active){
-
-        toast(
-            "Start a search first.",
-            "info"
-        );
-
+        toast("Start a search first.", "info");
         return;
     }
-
 
     if(playback.running){
-
         stopPlayback();
-
-        $("playBtn").textContent =
-            "▶";
-
+        $("playBtn").textContent = "▶";
         return;
     }
 
-
-    playback.running =
-        true;
-
-    $("playBtn").textContent =
-        "Ⅱ";
-
+    playback.running = true;
+    $("playBtn").textContent = "Ⅱ";
 
     runPlayback();
 
@@ -1012,28 +1257,19 @@ async function runPlayback(){
     while(
         playback.running &&
         playback.active &&
-        playback.current <
-            playback.steps.length - 1
+        playback.current < playback.steps.length - 1
     ){
-
         playback.current++;
-
         updatePlaybackUI();
 
         await wait(
             Number($("speed").value)
         );
-
     }
 
-
-    if(
-        playback.current >=
-        playback.steps.length - 1
-    ){
-
+    if(playback.active && playback.current >= playback.steps.length - 1){
+        await wait(Number($("speed").value));
         finishSearch();
-
     }
 
 }
@@ -1041,145 +1277,114 @@ async function runPlayback(){
 
 function stopPlayback(){
 
-    playback.running =
-        false;
+    playback.running = false;
 
     if(playback.timer)
-        clearTimeout(
-            playback.timer
-        );
+        clearTimeout(playback.timer);
 
-    $("playBtn").textContent =
-        "▶";
+    $("playBtn").textContent = "▶";
 
 }
 
 
 function finishSearch(){
 
-    playback.running =
-        false;
-
-    $("playBtn").textContent =
-        "▶";
-
+    playback.running = false;
+    $("playBtn").textContent = "▶";
 
     if(!playback.active)
         return;
 
+    const id = playback.target;
+    const strategy = $("searchStrategy").value;
 
-    const id =
-        playback.target;
+    const heapIndex = heap.findIndex(r => r.id === id);
+    const seqIndex = sequential.findIndex(r => r.id === id);
 
-    const strategy =
-        $("searchStrategy").value;
+    const heapComparisons = heapIndex === -1 ? heap.length : heapIndex + 1;
+    let seqComparisons = 0;
+    let seqAccess = 0;
 
+    if(strategy === "binary" || strategy === "race"){
 
-    const heapIndex =
-        heap.findIndex(
-            r => r.id === id
-        );
+        let low = 0, high = sequential.length - 1;
+        let probes = 0;
+        const accessedBlocks = new Set();
+        const bSize = getBlockSize();
 
-    const seqIndex =
-        sequential.findIndex(
-            r => r.id === id
-        );
+        while(low <= high){
+            probes++;
+            const mid = Math.floor((low + high) / 2);
+            accessedBlocks.add(Math.floor(mid / bSize));
+            if(sequential[mid].id === id){
+                break;
+            } else if(sequential[mid].id < id){
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        seqComparisons = probes;
+        seqAccess = sequential.length ? Math.max(1, accessedBlocks.size) : 0;
 
+    } else if(strategy === "ordered"){
 
-    const heapComparisons =
-        heapIndex === -1
-            ? heap.length
-            : heapIndex + 1;
+        if(seqIndex !== -1){
+            seqComparisons = seqIndex + 1;
+        } else {
+            const stopIdx = sequential.findIndex(r => r.id > id);
+            seqComparisons = stopIdx !== -1 ? stopIdx + 1 : sequential.length;
+        }
+        seqAccess = sequential.length ? Math.max(1, Math.ceil(seqComparisons / getBlockSize())) : 0;
 
+    } else {
 
-    let seqComparisons;
-
-
-    if(seqIndex !== -1){
-
-        seqComparisons =
-            seqIndex + 1;
-
-    }else{
-
-        seqComparisons =
-            strategy === "ordered"
-
-                ? sequential.findIndex(
-                    r => r.id > id
-                ) + 1
-
-                : sequential.length;
-
-        if(seqComparisons <= 0)
-            seqComparisons =
-                sequential.length;
+        seqComparisons = seqIndex !== -1 ? seqIndex + 1 : sequential.length;
+        seqAccess = sequential.length ? Math.max(1, Math.ceil(seqComparisons / getBlockSize())) : 0;
 
     }
 
+    const heapAccess = Math.max(1, Math.ceil(heapComparisons / getBlockSize()));
 
-    stats.heapComparisons +=
-        heapComparisons;
-
-    stats.seqComparisons +=
-        seqComparisons;
-
-
-    const heapAccess =
-        Math.max(
-            1,
-            Math.ceil(
-                heapComparisons /
-                getBlockSize()
-            )
-        );
-
-
-    const seqAccess =
-        Math.max(
-            1,
-            Math.ceil(
-                seqComparisons /
-                getBlockSize()
-            )
-        );
-
-
-    stats.heapBlocks +=
-        heap.length
-            ? heapAccess
-            : 0;
-
-    stats.seqBlocks +=
-        sequential.length
-            ? seqAccess
-            : 0;
-
-
+    stats.heapComparisons += heapComparisons;
+    stats.seqComparisons += seqComparisons;
+    stats.heapBlocks += heap.length ? heapAccess : 0;
+    stats.seqBlocks += sequential.length ? seqAccess : 0;
     operations++;
 
+    const found = heapIndex !== -1 || seqIndex !== -1;
+    const strategyLabels = {
+        scan: "Sequential Scan (Linear)",
+        ordered: "Ordered Scan (Early Stop)",
+        binary: "Binary Search (O(log N))",
+        race: "🏁 Dual Race Mode (Head-to-Head)"
+    };
 
-    const found =
-        heapIndex !== -1 ||
-        seqIndex !== -1;
+    const resultRows = [
+        ["Target Key", id],
+        ["Heap Comparisons", `${heapComparisons} (Linear Scan)`],
+        ["Sequential Comparisons", `${seqComparisons} (${strategy === "binary" || strategy === "race" ? "Binary Search" : "Linear"})`],
+        ["Heap Block I/Os", `${heapAccess} disk blocks`],
+        ["Sequential Block I/Os", `${seqAccess} disk blocks`],
+        ["Strategy", strategyLabels[strategy] || strategy]
+    ];
 
+    if(strategy === "race" || strategy === "binary"){
+        const diff = heapComparisons - seqComparisons;
+        const pct = heapComparisons > 0 ? Math.round((diff / heapComparisons) * 100) : 0;
+        resultRows.push([
+            "Efficiency Advantage",
+            diff > 0
+                ? `Sequential saved ${diff} comparison(s) (${pct}% reduction)`
+                : (diff === 0 ? "Equal comparisons" : `Heap probed ${-diff} fewer record(s)`)
+        ]);
+    }
 
     showResult(
         found,
-        found
-            ? `Record ${id} found`
-            : `Record ${id} not found`,
-        [
-            ["Heap comparisons",heapComparisons],
-            ["Sequential comparisons",seqComparisons],
-            ["Heap blocks accessed",heapAccess],
-            ["Sequential blocks accessed",seqAccess],
-            ["Strategy",strategy === "ordered"
-                ? "Ordered Search"
-                : "Sequential Scan"]
-        ]
+        found ? `Record ${id} Found` : `Record ${id} Not Found`,
+        resultRows
     );
-
 
     explain(
         "search",
@@ -1194,12 +1399,10 @@ function finishSearch(){
         }
     );
 
-
     addLog(
         "SEARCH",
-        `Record ${id}: ${found ? "FOUND" : "NOT FOUND"}`
+        `Record ${id}: ${found ? "FOUND" : "NOT FOUND"} (Heap: ${heapComparisons} probes, Seq: ${seqComparisons} probes)`
     );
-
 
     updateStats();
 
@@ -1412,83 +1615,260 @@ function explain(type,data){
 
     let html = "";
 
-
     if(type === "insert"){
-
-        html =
-            `<p>
-                <strong>Heap:</strong>
-                Record ${data.id} was appended to the
-                Heap file. Its insertion position does not
-                depend on the value of the key.
-            </p>
-
-            <p style="margin-top:10px">
-                <strong>Sequential:</strong>
-                The same record was placed according to
-                ascending Record ID, preserving the ordered
-                structure.
-            </p>`;
-
+        html = `
+            <div class="explain-card">
+                <div class="explain-badge">OPERATION: RECORD INSERTION</div>
+                <p>
+                    <strong>Heap File:</strong>
+                    Record ${data.id} was appended directly to the end of the file into the active storage block.
+                    <em>I/O Cost:</em> <strong>O(1)</strong> (Reads the last block, appends record, and writes it back = 2 block I/Os).
+                </p>
+                <p style="margin-top:10px">
+                    <strong>Sequential File:</strong>
+                    Record ${data.id} was placed into ascending Primary Key order.
+                    <em>I/O Cost:</em> <strong>O(n)</strong> (Requires locating the target block via binary search, followed by shifting subsequent records across blocks to create an insertion slot).
+                </p>
+            </div>
+        `;
     }
 
 
     if(type === "search"){
+        const diff = data.heapComparisons - data.seqComparisons;
+        const pct = data.heapComparisons > 0 ? Math.round((diff / data.heapComparisons) * 100) : 0;
+        const isBinary = data.strategy === "binary" || data.strategy === "race";
 
-        html =
-            `<p>
-                The simulator examined records until the
-                target key was found or the search could
-                terminate.
-            </p>
+        html = `
+            <div class="explain-card">
+                <div class="explain-badge">OPERATION: SEARCH (TARGET KEY ${data.id})</div>
+                <p><strong>Search Outcome:</strong> ${data.found ? "Record located successfully." : "Key not found in database."}</p>
 
-            <p style="margin-top:10px">
-                <strong>Heap:</strong>
-                ${data.heapComparisons}
-                record comparisons and approximately
-                ${data.heapAccess} block access(es).
-            </p>
+                <div class="explain-metrics-grid">
+                    <div class="explain-metric-box">
+                        <span class="metric-label">HEAP FILE (LINEAR SCAN)</span>
+                        <div class="metric-num purple">${data.heapComparisons} Probes</div>
+                        <small>${data.heapAccess} disk block I/O(s)</small>
+                    </div>
+                    <div class="explain-metric-box">
+                        <span class="metric-label">SEQUENTIAL (${isBinary ? "BINARY SEARCH" : "ORDERED SCAN"})</span>
+                        <div class="metric-num cyan">${data.seqComparisons} Probes</div>
+                        <small>${data.seqAccess} disk block I/O(s)</small>
+                    </div>
+                </div>
 
-            <p style="margin-top:10px">
-                <strong>Sequential:</strong>
-                ${data.seqComparisons}
-                record comparisons and approximately
-                ${data.seqAccess} block access(es).
-            </p>`;
-
-        if(data.strategy === "ordered"){
-
-            html +=
-                `<p style="margin-top:10px">
-                    Because the Sequential file is ordered
-                    by ID, the simulator can stop when it
-                    reaches a key greater than the target.
-                </p>`;
-
-        }
-
+                ${isBinary ? `
+                    <p style="margin-top:8px;">
+                        <strong>Algorithmic Analysis:</strong> Sequential File utilized <strong>Binary Search (O(log₂ N))</strong>. By probing the midpoint of each partition, it discarded 50% of candidate records at every step.
+                        ${diff > 0 ? `<br><span style="color:var(--green);font-weight:600;">⚡ Advantage: Sequential saved ${diff} comparison(s) (${pct}% reduction) over Heap linear scan!</span>` : ""}
+                    </p>
+                ` : `
+                    <p style="margin-top:8px;">
+                        <strong>Algorithmic Analysis:</strong> Sequential File utilized ${data.strategy === "ordered" ? "Ordered Scan (early termination upon reaching a key > target)" : "Sequential Linear Scan"}.
+                    </p>
+                `}
+            </div>
+        `;
     }
 
 
     if(type === "delete"){
-
-        html =
-            `<p>
-                Record ${data.id} was removed from both
-                file representations.
-            </p>
-
-            <p style="margin-top:10px">
-                Deletion requires locating the target
-                record first. The exact cost depends on
-                the search process and file organization.
-            </p>`;
-
+        html = `
+            <div class="explain-card">
+                <div class="explain-badge">OPERATION: RECORD DELETION (KEY ${data.id})</div>
+                <p>
+                    <strong>Heap File:</strong> Located record via linear scan. In real database engines, deletion is handled via:
+                    <br>1. <em>Tombstone / Deletion Bit:</em> Mark the record slot as deleted without shifting records (O(1) rewrite).
+                    <br>2. <em>Compaction / Swap with Last:</em> Move the very last record in the heap file into this empty slot to prevent fragmentation (O(1) I/O!).
+                </p>
+                <p style="margin-top:10px">
+                    <strong>Sequential File:</strong> Located key via Binary Search O(log₂ n). To maintain sorted order, all subsequent records in the file must be shifted backward, requiring multiple block reads and writes (O(n) I/O cost).
+                </p>
+            </div>
+        `;
     }
 
+    $("explanation").innerHTML = html;
 
-    $("explanation").innerHTML =
-        html;
+}
+
+
+/* =========================================================
+   INTERACTIVE AI TUTOR KNOWLEDGE BASE & ENGINE
+========================================================= */
+
+const aiKnowledgeBase = {
+    binary_vs_linear: {
+        title: "Why Binary Search Outperforms Linear Scan in DBMS",
+        answer: `
+            <p><strong>Mathematical Principle:</strong></p>
+            <ul>
+                <li><strong>Linear Scan (Heap File):</strong> Searches sequentially from Block 0. In the average case, it probes <code>N/2</code> records and transfers <code>b/2</code> disk blocks into RAM. For 1,000,000 records, that is ~500,000 disk probes!</li>
+                <li><strong>Binary Search (Sequential File):</strong> Leverages the sorted primary key order. At each probe step, it compares the target key against the midpoint <code>mid = ⌊(low + high) / 2⌋</code>. If the target is smaller, the entire upper half is discarded.</li>
+                <li><strong>Complexity:</strong> The search space halves at every step: <code>N → N/2 → N/4 → ... → 1</code>, resulting in <code>⌊log₂ N⌋ + 1</code> comparisons and at most <code>⌈log₂ b⌉</code> block I/O transfers. For 1,000,000 records, Binary Search finishes in at most <strong>20 probes</strong>!</li>
+            </ul>
+        `
+    },
+    block_capacity: {
+        title: "Impact of Block Capacity (Blocking Factor B)",
+        answer: `
+            <p><strong>Blocking Factor (B):</strong> The number of records stored per disk block.</p>
+            <ul>
+                <li><strong>Larger Block Capacity (e.g., 8 records/block):</strong>
+                    <ul>
+                        <li>Reduces total allocated blocks <code>b = ⌈N / B⌉</code>.</li>
+                        <li>Fewer disk I/O transfers are needed because more records are read into RAM per page fetch.</li>
+                        <li>However, CPU processing per block increases and internal fragmentation is higher if blocks are partially filled.</li>
+                    </ul>
+                </li>
+                <li><strong>Smaller Block Capacity (e.g., 2 records/block):</strong>
+                    <ul>
+                        <li>Increases total disk block overhead and metadata pointers.</li>
+                        <li>More block I/O operations are required during linear scans.</li>
+                        <li>Reduces internal fragmentation wasted bytes on the final block.</li>
+                    </ul>
+                </li>
+            </ul>
+        `
+    },
+    heap_vs_seq: {
+        title: "When to Choose Heap File vs Sequential File",
+        answer: `
+            <p><strong>Workload Trade-offs in Real Database Engines:</strong></p>
+            <ul>
+                <li><strong>Choose Heap Files when:</strong>
+                    <ul>
+                        <li><strong>Write-Heavy Workloads:</strong> High-speed logging, bulk data ingestion, IoT sensor streams, or audit trails where records are constantly appended at <code>O(1)</code> cost without sorting overhead.</li>
+                        <li>Entire tables are scanned anyway (e.g., full table analytical aggregation <code>COUNT(*)</code> or <code>SUM()</code>).</li>
+                    </ul>
+                </li>
+                <li><strong>Choose Sequential Files when:</strong>
+                    <ul>
+                        <li><strong>Read-Heavy Workloads:</strong> Frequent point lookups by primary key (utilizing <code>O(log₂ N)</code> Binary Search).</li>
+                        <li><strong>Range Queries:</strong> Queries with <code>WHERE id BETWEEN 100 AND 200</code> can locate the start in <code>O(log₂ N)</code> and then scan contiguous blocks sequentially without jumping.</li>
+                    </ul>
+                </li>
+            </ul>
+        `
+    },
+    fragmentation: {
+        title: "Internal Fragmentation in Database Blocks",
+        answer: `
+            <p><strong>What is Internal Fragmentation?</strong></p>
+            <ul>
+                <li>Databases allocate secondary storage in fixed-size units called <strong>pages or disk blocks</strong> (commonly 4KB or 8KB).</li>
+                <li>If a table contains records that do not completely fill the allocated block capacity, the unused space inside the block is called <strong>Internal Fragmentation</strong>.</li>
+                <li><em>Packing Factor:</em> The ratio of useful record data to total block capacity: <code>(Active Records / Total Slot Capacity) × 100%</code>.</li>
+                <li><strong>How DBMS minimizes it:</strong> By using variable-length slotted page architectures, overflow chains, or record compaction.</li>
+            </ul>
+        `
+    },
+    deletion: {
+        title: "Record Deletion Strategies & Cost Comparison",
+        answer: `
+            <p><strong>Deletion Mechanisms in DBMS:</strong></p>
+            <ul>
+                <li><strong>In Heap Files:</strong>
+                    <ul>
+                        <li><strong>Tombstone / Deletion Bit:</strong> Sets a 1-bit flag indicating the record is deleted. The slot remains vacant until reused by future inserts.</li>
+                        <li><strong>Compaction / Last Record Swap:</strong> The last record in the entire heap file is moved into the vacated slot. This maintains 100% packing factor without shifting other records (takes only <code>O(1)</code> I/O!).</li>
+                    </ul>
+                </li>
+                <li><strong>In Sequential Files:</strong>
+                    <ul>
+                        <li>To maintain contiguous sorted primary key order, all records after the deleted record must be shifted backward by one slot.</li>
+                        <li>This causes cascading disk writes across all subsequent blocks (<code>O(n)</code> I/O cost).</li>
+                        <li>Modern DBMS mitigate this using <strong>overflow blocks and pointer chains</strong> to avoid immediate physical record shifting.</li>
+                    </ul>
+                </li>
+            </ul>
+        `
+    }
+};
+
+function askAiTutor(topicKey){
+
+    const item = aiKnowledgeBase[topicKey];
+    if(!item) return;
+
+    const bSize = getBlockSize();
+    const totalRecords = heap.length;
+    const totalBlocks = Math.ceil(totalRecords / bSize) || 0;
+
+    const dynamicContext = `
+        <div style="margin-top:10px;padding:8px 10px;background:#0d1117;border-left:3px solid var(--cyan);border-radius:4px;font-size:9px;">
+            <strong>Live Context from Current Lab:</strong> Current dataset has <code>${totalRecords}</code> records across <code>${totalBlocks}</code> blocks (Capacity = ${bSize} records/block).
+        </div>
+    `;
+
+    $("aiTutorResponseText").innerHTML = `
+        <h4>${item.title}</h4>
+        ${item.answer}
+        ${dynamicContext}
+    `;
+
+    $("aiTutorResponse").style.display = "block";
+    $("aiTutorResponse").scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+}
+
+function submitAiQuery(){
+
+    const input = $("aiCustomQuery");
+    const query = (input.value || "").trim().toLowerCase();
+
+    if(!query){
+        toast("Please enter a question for the AI Tutor.", "info");
+        return;
+    }
+
+    input.value = "";
+    const bSize = getBlockSize();
+    const totalRecords = heap.length;
+    const totalBlocks = Math.ceil(totalRecords / bSize) || 0;
+
+    let answerHtml = "";
+
+    if(query.includes("binary") || query.includes("log") || query.includes("faster")){
+        answerHtml = aiKnowledgeBase.binary_vs_linear.answer;
+    } else if(query.includes("capacity") || query.includes("block") || query.includes("size")){
+        answerHtml = aiKnowledgeBase.block_capacity.answer;
+    } else if(query.includes("heap") && (query.includes("sequential") || query.includes("choose") || query.includes("difference") || query.includes("better"))){
+        answerHtml = aiKnowledgeBase.heap_vs_seq.answer;
+    } else if(query.includes("fragment") || query.includes("waste") || query.includes("pack")){
+        answerHtml = aiKnowledgeBase.fragmentation.answer;
+    } else if(query.includes("delete") || query.includes("remove") || query.includes("tombstone")){
+        answerHtml = aiKnowledgeBase.deletion.answer;
+    } else if(query.includes("insert") || query.includes("append") || query.includes("shift")){
+        answerHtml = `
+            <p><strong>Insertion Mechanics in DBMS:</strong></p>
+            <ul>
+                <li><strong>Heap File:</strong> Always appends to the last block with space (or allocates a new block). Time complexity is <code>O(1)</code>, requiring just 2 block I/Os (1 read + 1 write).</li>
+                <li><strong>Sequential File:</strong> Must insert records in sorted key sequence. If inserting into the middle of a full block, all subsequent records must be shifted or an overflow block allocated. Cost is <code>O(n)</code> I/Os.</li>
+            </ul>
+        `;
+    } else {
+        answerHtml = `
+            <p><strong>AI Tutor Guidance for: "${escapeHTML(query)}"</strong></p>
+            <p>In Database Management Systems (DBMS), the physical file organization dictates how data blocks on secondary storage (HDD/SSD) are transferred into buffer memory in RAM.</p>
+            <ul>
+                <li><strong>Heap Organization:</strong> Fast unordered append (<code>O(1)</code>), slow linear search (<code>O(n)</code>). Best for audit logs and high-throughput ingestion.</li>
+                <li><strong>Sequential Organization:</strong> Sorted by search key, fast Binary Search (<code>O(log₂ n)</code>) and ordered range scans (<code>O(n)</code>), but costly record shifting during insertion/deletion (<code>O(n)</code>).</li>
+                <li><strong>Disk Blocking:</strong> Transferring blocks rather than individual records reduces mechanical disk seek and rotational latency.</li>
+            </ul>
+        `;
+    }
+
+    $("aiTutorResponseText").innerHTML = `
+        <h4>✦ Answer for: "${escapeHTML(query)}"</h4>
+        ${answerHtml}
+        <div style="margin-top:10px;padding:8px 10px;background:#0d1117;border-left:3px solid var(--purple);border-radius:4px;font-size:9px;">
+            <strong>Live Simulation State:</strong> Dataset size: <code>${totalRecords}</code> records | Block capacity: <code>${bSize}</code> | Allocated Blocks: <code>${totalBlocks}</code>.
+        </div>
+    `;
+
+    $("aiTutorResponse").style.display = "block";
+    $("aiTutorResponse").scrollIntoView({ behavior: "smooth", block: "nearest" });
 
 }
 
