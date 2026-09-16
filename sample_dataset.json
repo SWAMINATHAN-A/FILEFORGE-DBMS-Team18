@@ -1,39 +1,159 @@
-﻿{
-  name: sample-student-dataset,
-  exportedAt: 2026-09-16T17:00:00.000Z,
-  blockSize: 3,
-  heap: [
-    { id: 105, name: Rahul, dept: CSE, marks: 85 },
-    { id: 108, name: Aman, dept: ECE, marks: 72 },
-    { id: 103, name: Priya, dept: IT, marks: 91 },
-    { id: 115, name: Ananya, dept: AIML, marks: 89 },
-    { id: 120, name: Neha, dept: AIML, marks: 88 },
-    { id: 106, name: Amit, dept: CSE, marks: 80 },
-    { id: 114, name: Ritu, dept: IT, marks: 86 },
-    { id: 101, name: Aarav, dept: CSE, marks: 95 },
-    { id: 128, name: Suresh, dept: ME, marks: 70 },
-    { id: 109, name: Kavita, dept: ECE, marks: 92 },
-    { id: 122, name: Deepak, dept: ME, marks: 68 },
-    { id: 118, name: Vikas, dept: IT, marks: 88 }
+{
+  "name": "sample-student-dataset",
+  "exportedAt": "2026-09-16T17:00:00.000Z",
+  "blockSize": 3,
+  "heap": [
+    {
+      "id": 105,
+      "name": "Rahul",
+      "dept": "CSE",
+      "marks": 85
+    },
+    {
+      "id": 108,
+      "name": "Aman",
+      "dept": "ECE",
+      "marks": 72
+    },
+    {
+      "id": 103,
+      "name": "Priya",
+      "dept": "IT",
+      "marks": 91
+    },
+    {
+      "id": 115,
+      "name": "Ananya",
+      "dept": "AIML",
+      "marks": 89
+    },
+    {
+      "id": 120,
+      "name": "Neha",
+      "dept": "AIML",
+      "marks": 88
+    },
+    {
+      "id": 106,
+      "name": "Amit",
+      "dept": "CSE",
+      "marks": 80
+    },
+    {
+      "id": 114,
+      "name": "Ritu",
+      "dept": "IT",
+      "marks": 86
+    },
+    {
+      "id": 101,
+      "name": "Aarav",
+      "dept": "CSE",
+      "marks": 95
+    },
+    {
+      "id": 128,
+      "name": "Suresh",
+      "dept": "ME",
+      "marks": 70
+    },
+    {
+      "id": 109,
+      "name": "Kavita",
+      "dept": "ECE",
+      "marks": 92
+    },
+    {
+      "id": 122,
+      "name": "Deepak",
+      "dept": "ME",
+      "marks": 68
+    },
+    {
+      "id": 118,
+      "name": "Vikas",
+      "dept": "IT",
+      "marks": 88
+    }
   ],
-  sequential: [
-    { id: 101, name: Aarav, dept: CSE, marks: 95 },
-    { id: 103, name: Priya, dept: IT, marks: 91 },
-    { id: 105, name: Rahul, dept: CSE, marks: 85 },
-    { id: 106, name: Amit, dept: CSE, marks: 80 },
-    { id: 108, name: Aman, dept: ECE, marks: 72 },
-    { id: 109, name: Kavita, dept: ECE, marks: 92 },
-    { id: 114, name: Ritu, dept: IT, marks: 86 },
-    { id: 115, name: Ananya, dept: AIML, marks: 89 },
-    { id: 118, name: Vikas, dept: IT, marks: 88 },
-    { id: 120, name: Neha, dept: AIML, marks: 88 },
-    { id: 122, name: Deepak, dept: ME, marks: 68 },
-    { id: 128, name: Suresh, dept: ME, marks: 70 }
+  "sequential": [
+    {
+      "id": 101,
+      "name": "Aarav",
+      "dept": "CSE",
+      "marks": 95
+    },
+    {
+      "id": 103,
+      "name": "Priya",
+      "dept": "IT",
+      "marks": 91
+    },
+    {
+      "id": 105,
+      "name": "Rahul",
+      "dept": "CSE",
+      "marks": 85
+    },
+    {
+      "id": 106,
+      "name": "Amit",
+      "dept": "CSE",
+      "marks": 80
+    },
+    {
+      "id": 108,
+      "name": "Aman",
+      "dept": "ECE",
+      "marks": 72
+    },
+    {
+      "id": 109,
+      "name": "Kavita",
+      "dept": "ECE",
+      "marks": 92
+    },
+    {
+      "id": 114,
+      "name": "Ritu",
+      "dept": "IT",
+      "marks": 86
+    },
+    {
+      "id": 115,
+      "name": "Ananya",
+      "dept": "AIML",
+      "marks": 89
+    },
+    {
+      "id": 118,
+      "name": "Vikas",
+      "dept": "IT",
+      "marks": 88
+    },
+    {
+      "id": 120,
+      "name": "Neha",
+      "dept": "AIML",
+      "marks": 88
+    },
+    {
+      "id": 122,
+      "name": "Deepak",
+      "dept": "ME",
+      "marks": 68
+    },
+    {
+      "id": 128,
+      "name": "Suresh",
+      "dept": "ME",
+      "marks": 70
+    }
   ],
-  stats: {
-    heapComparisons: 0,
-    seqComparisons: 0,
-    heapBlocks: 0,
-    seqBlocks: 0
+  "stats": {
+    "heapComparisons": 0,
+    "seqComparisons": 0,
+    "heapBlocks": 0,
+    "seqBlocks": 0
   }
 }

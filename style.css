@@ -2514,4 +2514,87 @@ body.light-mode .stat-card{
     .storage-metrics-grid {
     grid-template-columns: 1fr 1fr;
 }
-}
+}
+/* ==================== HELP / USER MANUAL PAGE ==================== */
+.help-panel{
+    margin-top:12px;
+}
+
+.help-steps{
+    margin:14px 0 0 18px;
+    padding:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.75;
+}
+
+.help-steps li{
+    margin-bottom:12px;
+    padding-left:4px;
+}
+
+.help-steps b,
+.help-list b{
+    color:var(--text);
+}
+
+.help-list{
+    margin:14px 0 0 0;
+    padding:0;
+    list-style:none;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.7;
+}
+
+.help-list li{
+    position:relative;
+    padding:0 0 10px 16px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:10px;
+}
+
+.help-list li:last-child{
+    border-bottom:none;
+    margin-bottom:0;
+    padding-bottom:0;
+}
+
+.help-list li::before{
+    content:"›";
+    position:absolute;
+    left:0;
+    color:var(--purple);
+    font-weight:700;
+}
+
+.help-panel code{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 5px;
+    font-size:11px;
+    color:var(--cyan);
+}
+
+.help-table{
+    font-size:11px;
+    margin-top:14px;
+}
+
+.help-table th{
+    color:var(--dim);
+    font-size:10px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+}
+
+.help-table td{
+    color:var(--muted);
+    border-bottom:1px solid var(--border);
+}
+
+.help-table td:not(:first-child){
+    color:var(--text);
+    font-weight:600;
+}

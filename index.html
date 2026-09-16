@@ -47,6 +47,9 @@
             <button class="nav-btn" data-page="quiz">
                 <span>✓</span> Quiz
             </button>
+            <button class="nav-btn" data-page="help">
+                <span>☰</span> Help
+            </button>
             <button class="nav-btn" data-page="about">
                 <span>ⓘ</span> About
             </button>
@@ -733,6 +736,156 @@
             </div>
         </section>
 
+        <!-- ==================== HELP / USER MANUAL PAGE ==================== -->
+        <section class="page" id="help">
+            <div class="learn-header">
+                <span class="status-badge">USER MANUAL</span>
+                <h2>How to use FILEFORGE</h2>
+                <p>A complete walkthrough of every control, the playback engine, and how to read the output.</p>
+            </div>
+
+            <div class="panel help-panel">
+                <span class="eyebrow">QUICK START</span>
+                <h3>Run your first simulation in 4 steps</h3>
+                <ol class="help-steps">
+                    <li>
+                        <b>Load data.</b>
+                        Open <b>Simulator</b> and click <b>⟳ Generate Dataset</b> for a random set of records,
+                        or <b>↑ Import</b> and choose <code>sample_dataset.json</code> from the project folder.
+                    </li>
+                    <li>
+                        <b>Pick a strategy.</b>
+                        In the Configuration card choose a <b>Search Strategy</b> (start with
+                        <i>Binary Search</i> or <i>Dual Race Mode</i>) and set the <b>Animation Speed</b>.
+                    </li>
+                    <li>
+                        <b>Start a search.</b>
+                        Type an existing ID into <b>RECORD ID</b> and press <b>⌕ Search</b>.
+                        The playback bar arms itself and shows <i>Searching for Record &lt;id&gt;</i>.
+                    </li>
+                    <li>
+                        <b>Step through it.</b>
+                        Press <b>▶</b> to auto-play, or <b>›</b> to advance one probe at a time and read
+                        the explanation printed for each step.
+                    </li>
+                </ol>
+            </div>
+
+            <div class="dashboard-columns">
+                <div class="panel help-panel">
+                    <span class="eyebrow">RECORD OPERATIONS</span>
+                    <h3>Insert, Search, Delete</h3>
+                    <ul class="help-list">
+                        <li><b>+ Insert</b> — needs all four fields (ID, Name, Department, Marks 0–100).
+                            The record is appended to the end of the Heap file and placed in sorted key
+                            position in the Sequential file. Duplicate IDs are rejected.</li>
+                        <li><b>⌕ Search</b> — only the <b>RECORD ID</b> field is used. This does not
+                            run instantly; it builds an animation queue you drive with the playback bar.</li>
+                        <li><b>× Delete</b> — only the <b>RECORD ID</b> field is used. The record is removed
+                            from both files and the blocks are re-rendered so you can watch records shift.</li>
+                    </ul>
+                </div>
+
+                <div class="panel help-panel">
+                    <span class="eyebrow">PLAYBACK BAR</span>
+                    <h3>Controlling the animation</h3>
+                    <ul class="help-list">
+                        <li><b>▶ / ❚❚</b> — play or pause the probe sequence at the selected speed.</li>
+                        <li><b>›</b> — advance exactly one probe. Best for viva demos and for counting
+                            comparisons by hand.</li>
+                        <li><b>‹</b> — step backward to re-examine the previous probe.</li>
+                        <li><b>Reset</b> — clear the current run and unhighlight all blocks. The data itself
+                            is not deleted.</li>
+                        <li>The progress bar and the <b>n / total</b> counter show how far through the
+                            probe sequence you are.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel help-panel">
+                <span class="eyebrow">SEARCH STRATEGIES</span>
+                <h3>What each mode demonstrates</h3>
+                <table class="complexity-table help-table">
+                    <thead>
+                        <tr><th>Strategy</th><th>Heap File</th><th>Sequential File</th><th>Use it to show</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Binary Search</td>
+                            <td>Linear scan, O(N)</td>
+                            <td>Binary search, O(log₂ N)</td>
+                            <td>The core performance gap between the two organizations</td>
+                        </tr>
+                        <tr>
+                            <td>Dual Race Mode</td>
+                            <td>Linear scan</td>
+                            <td>Binary search</td>
+                            <td>Both heads moving in lock-step, with a winner summary</td>
+                        </tr>
+                        <tr>
+                            <td>Sequential Scan</td>
+                            <td>Linear scan</td>
+                            <td>Linear scan</td>
+                            <td>That sorting alone gains nothing without the right algorithm</td>
+                        </tr>
+                        <tr>
+                            <td>Ordered Scan</td>
+                            <td>Linear scan</td>
+                            <td>Linear scan, early stop</td>
+                            <td>Early termination once a key larger than the target appears</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span class="complexity-note">Binary Search and Dual Race Mode display [L], [MID] and [R] pointer badges, and dim every record outside the active partition.</span>
+            </div>
+
+            <div class="dashboard-columns">
+                <div class="panel help-panel">
+                    <span class="eyebrow">READING THE BLOCKS</span>
+                    <h3>Storage view</h3>
+                    <ul class="help-list">
+                        <li><b>BLOCK CAPACITY</b> slider (2–8) sets how many records fit in one disk block.
+                            Lower it to create more blocks and more I/O; raise it to see fewer, fuller blocks.</li>
+                        <li><b>FULL (4/4)</b> in green means the block is packed;
+                            <b>PARTIAL (2/4)</b> in amber means it has free slots.</li>
+                        <li>Dashed outlines are empty slots — this is <b>internal fragmentation</b>.</li>
+                        <li><b>Packing Factor</b> = active records ÷ total allocated slots × 100%.</li>
+                    </ul>
+                </div>
+
+                <div class="panel help-panel">
+                    <span class="eyebrow">OTHER PAGES</span>
+                    <h3>Where everything lives</h3>
+                    <ul class="help-list">
+                        <li><b>Dashboard</b> — summary metrics and shortcuts into the simulator.</li>
+                        <li><b>Analytics</b> — comparison charts of comparisons and block accesses.</li>
+                        <li><b>History</b> — a log of every operation run in this session.</li>
+                        <li><b>Learn</b> — the underlying DBMS theory in nine short cards.</li>
+                        <li><b>Quiz</b> — self-test questions on file organization.</li>
+                        <li><b>AI Tutor</b> (inside Simulator) — click a question chip or type your own;
+                            answers use your live record count and block size.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel help-panel">
+                <span class="eyebrow">TROUBLESHOOTING</span>
+                <h3>Common issues</h3>
+                <ul class="help-list">
+                    <li><b>"Please enter all record details"</b> — Insert needs all four fields; Search and
+                        Delete need only the ID.</li>
+                    <li><b>Nothing animates after pressing Search</b> — the run is armed but paused.
+                        Press <b>▶</b> or <b>›</b>.</li>
+                    <li><b>"Record already exists"</b> — primary keys are unique; pick another ID.</li>
+                    <li><b>Import does nothing</b> — the file must be valid JSON exported by
+                        <b>↓ Report</b> / export, with <code>heap</code>, <code>sequential</code> and
+                        <code>blockSize</code> keys.</li>
+                    <li><b>Colours look wrong</b> — use <b>◐ Toggle Theme</b> at the bottom of the sidebar
+                        to switch between dark and light mode.</li>
+                </ul>
+            </div>
+        </section>
+
         <!-- ==================== ABOUT PAGE ==================== -->
         <section class="page" id="about">
             <div class="about-card panel">
@@ -769,6 +922,57 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Team / developer details -->
+            <div class="panel help-panel">
+                <span class="eyebrow">DEVELOPED BY</span>
+                <h3>Project Team</h3>
+                <table class="complexity-table help-table">
+                    <thead>
+                        <tr><th>Student Name</th><th>Register / Roll Number</th><th>Contribution</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Arya Sengupta</td>
+                            <td>25BCE1795</td>
+                            <td>Search algorithms, dual race mode, fragmentation model, AI tutor</td>
+                        </tr>
+                        <tr>
+                            <td>Dani Noble Varkey</td>
+                            <td>25BCE1894</td>
+                            <td>Interface pages, help manual, testing and documentation</td>
+                        </tr>
+                        <tr>
+                            <td>Gokul B</td>
+                            <td>25BCE1989</td>
+                            <td>Interface pages, help manual, testing and documentation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-columns">
+                <div class="panel help-panel">
+                    <span class="eyebrow">COURSE DETAILS</span>
+                    <h3>Academic Information</h3>
+                    <ul class="help-list">
+                        <li><b>Department:</b> BTech. CSE</li>
+                        <li><b>Course:</b> Database Management Systems</li>
+                        <li><b>Team Number:</b> 18 — Heap vs Sequential File Visualizer</li>
+                        <li><b>Academic Year:</b> 2026-27</li>
+                    </ul>
+                </div>
+
+                <!-- <div class="panel help-panel">
+                    <span class="eyebrow">GUIDED BY</span>
+                    <h3>Faculty Guide</h3>
+                    <ul class="help-list">
+                        <li><b>Name:</b> GUIDE_NAME</li>
+                        <li><b>Designation:</b> GUIDE_DESIGNATION</li>
+                        <li><b>Institution:</b> INSTITUTION_NAME</li>
+                    </ul>
+                </div> -->
+            </div>
         </section>
 
     </main>
@@ -785,6 +989,16 @@
 <script src="js/history.js"></script>
 <script src="js/quiz.js"></script>
 <script src="js/main.js"></script>
+
+<!-- Help page title label (runs after the app's own nav handler) -->
+<script>
+document.querySelectorAll('.nav-btn[data-page="help"]').forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        document.getElementById("pageTitle").textContent = "Help & User Manual";
+        document.getElementById("breadcrumbPage").textContent = "HELP";
+    });
+});
+</script>
 
 </body>
 </html>
