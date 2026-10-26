@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FILEFORGE | DBMS File Organization Lab</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ext.css">
 </head>
 <body>
 
@@ -44,6 +45,9 @@
             <button class="nav-btn" data-page="learn">
                 <span>?</span> Learn
             </button>
+            <button class="nav-btn" data-page="teach">
+                <span>▶</span> Teach
+            </button>
             <button class="nav-btn" data-page="quiz">
                 <span>✓</span> Quiz
             </button>
@@ -63,6 +67,15 @@
             <div class="engine-status">
                 <span class="online-dot"></span>
                 Simulation Engine <b>ONLINE</b>
+            </div>
+
+            <!-- Current session badge (role / course), set by session.js -->
+            <div class="session-badge" id="sessionBadge" style="display:none;">
+                <div class="session-badge-info">
+                    <span id="sessionBadgeRole">Session</span>
+                    <small id="sessionBadgeCourse">&mdash;</small>
+                </div>
+                <button id="sessionEditBtn" type="button" title="Change session details">&#9998;</button>
             </div>
         </div>
     </aside>
@@ -97,6 +110,7 @@
                     <p>
                         Explore how Heap and Sequential file organization store records, use blocks,
                         and perform database operations through an interactive simulation.
+                        Built for coursework, but just as useful for engineers brushing up on the basics.
                     </p>
                     <div class="hero-actions">
                         <button class="primary-btn" onclick="navigate('simulator')">
@@ -164,6 +178,45 @@
                         <span>SEQ BLOCKS</span>
                         <strong id="dashSeqBlocks">0</strong>
                         <small>Storage blocks</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Animated Heap vs Sequential search comparison (charts.js) -->
+            <div class="panel chart-panel">
+                <div class="section-heading">
+                    <div>
+                        <span>PERFORMANCE AT SCALE</span>
+                        <h3>Heap vs Sequential &mdash; search comparisons</h3>
+                    </div>
+                </div>
+                <p class="chart-note">
+                    As record count grows, Heap's linear scan (average <b>N/2</b> comparisons) falls behind
+                    Sequential's Binary Search (<b>&lfloor;log&#8322;N&rfloor;+1</b> comparisons) fast.
+                    The lines below animate in as this page loads.
+                </p>
+                <div class="chart-wrap">
+                    <svg id="growthChart" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid meet"></svg>
+                    <div class="chart-legend">
+                        <span><i class="chart-dot heap-dot"></i> Heap &mdash; Linear Scan</span>
+                        <span><i class="chart-dot seq-dot"></i> Sequential &mdash; Binary Search</span>
+                    </div>
+                </div>
+
+                <div class="chart-slider-row">
+                    <label for="chartNSlider">Try it &mdash; dataset size (N): <b id="chartNLabel">200</b> records</label>
+                    <input type="range" id="chartNSlider" min="10" max="1000" step="10" value="200">
+                    <div class="chart-slider-result">
+                        <div class="chart-bar-track">
+                            <span class="chart-bar-label">Heap</span>
+                            <div class="chart-bar heap-bar"><i id="chartHeapBar"></i></div>
+                            <b id="chartHeapVal">100</b>
+                        </div>
+                        <div class="chart-bar-track">
+                            <span class="chart-bar-label">Sequential</span>
+                            <div class="chart-bar seq-bar"><i id="chartSeqBar"></i></div>
+                            <b id="chartSeqVal">9</b>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -712,6 +765,49 @@
             </div>
         </section>
 
+        <!-- ==================== TEACH PAGE ==================== -->
+        <section class="page" id="teach">
+            <div class="learn-header">
+                <span class="status-badge">WATCH &amp; READ</span>
+                <h2>Teach me: Heap &amp; Sequential</h2>
+                <p>A short video and a reference article for each file organization &mdash; watch, then come back and try it in the Simulator.</p>
+            </div>
+
+            <div class="teach-grid">
+                <article class="panel teach-card">
+                    <div class="strategy-top">
+                        <div class="strategy-icon heap-icon">H</div>
+                        <span class="strategy-tag">UNSORTED</span>
+                    </div>
+                    <h3>Heap File Organization</h3>
+                    <p>Records are appended in insertion order with no sorting &mdash; fast writes, linear-scan searches.</p>
+                    <div class="teach-video-wrap">
+                        <iframe src="https://www.youtube.com/embed/XycnarZEBvQ" title="Heap file organization video" loading="lazy" allowfullscreen></iframe>
+                    </div>
+                    <div class="teach-links">
+                        <a class="top-btn" href="https://www.youtube.com/watch?v=XycnarZEBvQ" target="_blank" rel="noopener">&#9654; Watch on YouTube</a>
+                        <a class="top-btn" href="https://www.geeksforgeeks.org/dsa/heap-data-structure/" target="_blank" rel="noopener">&#8599; Read on GeeksforGeeks</a>
+                    </div>
+                </article>
+
+                <article class="panel teach-card">
+                    <div class="strategy-top">
+                        <div class="strategy-icon seq-icon">S</div>
+                        <span class="strategy-tag cyan-tag">ORDERED</span>
+                    </div>
+                    <h3>Sequential File Organization</h3>
+                    <p>Records are kept sorted by primary key &mdash; slower writes, but Binary Search-fast lookups and ordered scans.</p>
+                    <div class="teach-video-wrap">
+                        <iframe src="https://www.youtube.com/embed/KWgIkLqG2xs" title="Sequential / linear search video" loading="lazy" allowfullscreen></iframe>
+                    </div>
+                    <div class="teach-links">
+                        <a class="top-btn" href="https://www.youtube.com/watch?v=KWgIkLqG2xs" target="_blank" rel="noopener">&#9654; Watch on YouTube</a>
+                        <a class="top-btn" href="https://www.geeksforgeeks.org/dsa/linear-search/" target="_blank" rel="noopener">&#8599; Read on GeeksforGeeks</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
         <!-- ==================== QUIZ PAGE ==================== -->
         <section class="page" id="quiz">
             <div class="page-intro">
@@ -776,7 +872,7 @@
                     <span class="eyebrow">RECORD OPERATIONS</span>
                     <h3>Insert, Search, Delete</h3>
                     <ul class="help-list">
-                        <li><b>+ Insert</b> — needs all four fields (ID, Name, Department, Marks 0–100).
+                        <li><b>+ Insert</b> — needs all four fields (<span id="helpFieldList">ID, Name, Department, Marks 0–100</span>).
                             The record is appended to the end of the Heap file and placed in sorted key
                             position in the Sequential file. Duplicate IDs are rejected.</li>
                         <li><b>⌕ Search</b> — only the <b>RECORD ID</b> field is used. This does not
@@ -898,6 +994,7 @@
                     <span>FILE ORGANIZATION</span>
                     <span>INTERACTIVE LAB</span>
                 </div>
+                <p class="session-about-line" id="aboutSessionLine" style="display:none;"></p>
             </div>
 
             <div class="dashboard-columns">
@@ -990,12 +1087,34 @@
 <script src="js/quiz.js"></script>
 <script src="js/main.js"></script>
 
+<!-- Intro boot animation + student/employee session setup (self-contained, no dependency on the modules above) -->
+<script src="session.js"></script>
+
+<!-- Role-based data entry: swaps Marks/Department for working professionals (self-contained, needs session.js) -->
+<script src="profile.js"></script>
+
+<!-- Animated Heap vs Sequential comparison charts on the Dashboard (self-contained) -->
+<script src="charts.js"></script>
+
+<!-- Question bank + Quiz Lab (count / difficulty / AI), expanded Learn, improved Help, Live Stream -->
+<script src="questions.js"></script>
+<script src="quizlab.js"></script>
+<script src="learn.js"></script>
+<script src="help.js"></script>
+<script src="realtime.js"></script>
+
 <!-- Help page title label (runs after the app's own nav handler) -->
 <script>
 document.querySelectorAll('.nav-btn[data-page="help"]').forEach(function (btn) {
     btn.addEventListener("click", function () {
         document.getElementById("pageTitle").textContent = "Help & User Manual";
         document.getElementById("breadcrumbPage").textContent = "HELP";
+    });
+});
+document.querySelectorAll('.nav-btn[data-page="teach"]').forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        document.getElementById("pageTitle").textContent = "Teach: Heap & Sequential";
+        document.getElementById("breadcrumbPage").textContent = "TEACH";
     });
 });
 </script>

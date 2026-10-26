@@ -2598,3 +2598,507 @@ body.light-mode .stat-card{
     color:var(--text);
     font-weight:600;
 }
+
+
+/* =====================================================
+   INTRO BOOT ANIMATION + SESSION SETUP
+   (added on top of the existing design tokens above —
+   uses the same var(--bg)/var(--panel)/var(--purple) etc.
+   so it follows dark/light theme automatically)
+===================================================== */
+
+.intro-overlay{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+    radial-gradient(circle at 50% 20%, rgba(130,114,255,.10), transparent 45%),
+    var(--bg);
+    opacity:1;
+    transition:opacity .45s ease;
+}
+
+.intro-overlay-out{
+    opacity:0;
+    pointer-events:none;
+}
+
+.intro-stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    width:100%;
+    max-width:420px;
+    padding:32px;
+}
+
+.intro-skip{
+    position:absolute;
+    top:26px;
+    right:30px;
+    background:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:11px;
+    letter-spacing:.04em;
+}
+
+.intro-skip:hover{
+    color:var(--text);
+    border-color:var(--border2);
+}
+
+.intro-mark{
+    font-size:44px;
+    color:var(--purple);
+    animation:introPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes introPulse{
+    0%,100%{ transform:scale(1); opacity:.85; }
+    50%{ transform:scale(1.12); opacity:1; }
+}
+
+.intro-word{
+    margin-top:14px;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.22em;
+    color:var(--text);
+}
+
+.intro-bar{
+    margin-top:28px;
+    width:220px;
+    height:4px;
+    border-radius:4px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    overflow:hidden;
+}
+
+.intro-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--purple), var(--cyan));
+    transition:width 1.8s linear;
+}
+
+.intro-status{
+    margin-top:14px;
+    font-size:12px;
+    color:var(--muted);
+    min-height:16px;
+}
+
+.intro-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+}
+
+.intro-stage-in{
+    animation:introCardIn .4s ease;
+}
+
+@keyframes introCardIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+.intro-badge{
+    margin:0 auto 14px;
+}
+
+.intro-title{
+    font-size:20px;
+    margin-bottom:6px;
+}
+
+.intro-sub{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:22px;
+}
+
+.intro-roles{
+    display:flex;
+    gap:10px;
+    width:100%;
+}
+
+.intro-role-btn{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:14px 8px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--panel2);
+    color:var(--muted);
+    font-size:20px;
+}
+
+.intro-role-btn span{
+    font-size:11px;
+}
+
+.intro-role-btn:hover{
+    border-color:var(--border2);
+    color:var(--text);
+}
+
+.intro-role-btn.active{
+    border-color:var(--purple);
+    color:var(--text);
+    box-shadow:0 0 0 1px var(--purple);
+    background:rgba(130,114,255,.10);
+}
+
+.intro-course-row{
+    width:100%;
+    margin-top:18px;
+    text-align:left;
+}
+
+.intro-course-row label{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:6px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+}
+
+.intro-course-row select,
+.intro-course-row input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--panel2);
+    color:var(--text);
+}
+
+.intro-course-row input{
+    margin-top:8px;
+}
+
+.intro-enter-btn{
+    margin-top:24px;
+    width:100%;
+    justify-content:center;
+}
+
+.intro-enter-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+/* Session badge in the sidebar footer */
+.session-badge{
+    margin-top:10px;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+}
+
+.session-badge-info{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    overflow:hidden;
+}
+
+.session-badge-info span{
+    color:var(--text);
+    font-size:10px;
+}
+
+.session-badge-info small{
+    color:var(--dim);
+    font-size:9px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+#sessionEditBtn{
+    background:none;
+    border:1px solid var(--border);
+    color:var(--muted);
+    border-radius:6px;
+    width:22px;
+    height:22px;
+    font-size:11px;
+    flex:none;
+}
+
+#sessionEditBtn:hover{
+    color:var(--text);
+    border-color:var(--purple);
+}
+
+.session-about-line{
+    margin-top:10px;
+    font-size:12px;
+    color:var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce){
+    .intro-mark{ animation:none; }
+    .intro-bar-fill{ transition:none; }
+}
+
+
+/* =====================================================
+   DASHBOARD — HEAP VS SEQUENTIAL COMPARISON CHART
+===================================================== */
+
+.chart-note{
+    color:var(--muted);
+    font-size:11.5px;
+    line-height:1.7;
+    margin-bottom:18px;
+    max-width:640px;
+}
+
+.chart-note b{
+    color:var(--text);
+}
+
+.chart-wrap{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px 16px 10px;
+}
+
+#growthChart{
+    width:100%;
+    height:auto;
+    display:block;
+    overflow:visible;
+}
+
+.chart-line{
+    fill:none;
+    stroke-width:2.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+.chart-line.heap-line{
+    stroke:var(--purple);
+}
+
+.chart-line.seq-line{
+    stroke:var(--cyan);
+}
+
+.chart-point{
+    stroke:var(--bg2);
+    stroke-width:1.5;
+}
+
+.chart-point.heap-point{
+    fill:var(--purple);
+}
+
+.chart-point.seq-point{
+    fill:var(--cyan);
+}
+
+.chart-axis-label{
+    fill:var(--dim);
+    font-size:9px;
+}
+
+.chart-axis-line{
+    stroke:var(--border2);
+    stroke-width:1;
+}
+
+.chart-legend{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    margin-top:8px;
+    padding:10px 0 4px;
+    font-size:10.5px;
+    color:var(--muted);
+}
+
+.chart-legend span{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.chart-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    display:inline-block;
+}
+
+.chart-dot.heap-dot{
+    background:var(--purple);
+}
+
+.chart-dot.seq-dot{
+    background:var(--cyan);
+}
+
+.chart-slider-row{
+    margin-top:18px;
+}
+
+.chart-slider-row label{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:10px;
+}
+
+.chart-slider-row label b{
+    color:var(--text);
+}
+
+.chart-slider-row input[type="range"]{
+    width:100%;
+    accent-color:var(--purple);
+}
+
+.chart-slider-result{
+    margin-top:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.chart-bar-track{
+    display:grid;
+    grid-template-columns:70px 1fr 50px;
+    align-items:center;
+    gap:10px;
+    font-size:11px;
+}
+
+.chart-bar-label{
+    color:var(--muted);
+}
+
+.chart-bar{
+    height:14px;
+    border-radius:7px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    overflow:hidden;
+}
+
+.chart-bar i{
+    display:block;
+    height:100%;
+    width:0%;
+    border-radius:7px;
+    transition:width .5s cubic-bezier(.2,.8,.2,1);
+}
+
+.heap-bar i{
+    background:linear-gradient(90deg, var(--purple), var(--purple2));
+}
+
+.seq-bar i{
+    background:linear-gradient(90deg, var(--cyan), #6ef0e8);
+}
+
+.chart-bar-track b{
+    text-align:right;
+    color:var(--text);
+}
+
+
+/* =====================================================
+   TEACH PAGE
+===================================================== */
+
+.teach-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.teach-card h3{
+    margin:14px 0 6px;
+    font-size:16px;
+}
+
+.teach-card > p{
+    color:var(--muted);
+    font-size:11.5px;
+    line-height:1.7;
+    margin-bottom:16px;
+}
+
+.teach-video-wrap{
+    position:relative;
+    width:100%;
+    padding-top:56.25%;
+    border-radius:10px;
+    overflow:hidden;
+    background:#000;
+    border:1px solid var(--border);
+}
+
+.teach-video-wrap iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+}
+
+.teach-links{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:wrap;
+}
+
+.teach-links a{
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+}
+
+@media (max-width:860px){
+    .teach-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =====================================================
+   CORPORATE / PROFESSIONAL ROLE FIELDS (session.js)
+===================================================== */
+
+.intro-detail-hint{
+    color:var(--dim);
+    font-size:10px;
+    margin-top:8px;
+    line-height:1.6;
+}
