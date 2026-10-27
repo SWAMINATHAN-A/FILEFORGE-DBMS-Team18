@@ -92,9 +92,9 @@ Photos live in `assets/team/` as `arya.jpg`, `dani.jpg` and `gokul.jpg` (square,
 
 | Name | Register No. | Contribution |
 | :--- | :--- | :--- |
-| Arya Sengupta | 25BCE1795 | Search algorithms, Dual Race Mode, fragmentation model, AI tutor |
-| Dani Noble Varkey | 25BCE1894 | Interface pages, help manual, testing and documentation |
-| Gokul Biju | 25BCE1989 | Interface pages, help manual, testing and documentation |
+| Arya Sengupta | 25BCE1795 | Search algorithms, fragmentation model, AI tutor |
+| Dani Noble Varkey | 25BCE1894 | Interface pages, testing, Dual Race Modification, correction of code |
+| Gokul Biju | 25BCE1989 | Help manual, testing and documentation |
 
 B.Tech CSE · Database Management Systems · Team 18 · 2026–27
 
