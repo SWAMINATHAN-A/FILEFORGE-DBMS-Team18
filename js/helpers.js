@@ -99,17 +99,20 @@ function navigate(page) {
         simulator: "Simulator",
         analytics: "Analytics",
         history: "History",
+        live: "Live Stream",
         learn: "Learn",
+        teach: "Teach: Heap & Sequential",
         quiz: "Quiz",
-        about: "About"
+        help: "Help & User Manual",
+        about: "Developed By"
     };
 
     $("pageTitle").textContent = titles[page] || page;
-    $("breadcrumbPage").textContent = page.toUpperCase();
+    $("breadcrumbPage").textContent = ({ about: "DEVELOPED BY", live: "LIVE STREAM" })[page] || page.toUpperCase();
 
     if (page === "history") renderHistory();
     if (page === "analytics") updateStats();
-    if (page === "quiz") renderQuiz();
+    if (page === "quiz" && window.FFQuizLab) window.FFQuizLab.refresh();
 
     window.scrollTo({ top: 0, behavior: "smooth" });
 }

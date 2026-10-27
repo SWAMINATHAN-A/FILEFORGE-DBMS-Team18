@@ -81,5 +81,4 @@ document.querySelectorAll(".nav-btn").forEach(button => {
 renderFiles();
 renderLog();
 renderHistory();
-renderQuiz();
 addLog("SYSTEM", "FILEFORGE simulation engine initialized.");

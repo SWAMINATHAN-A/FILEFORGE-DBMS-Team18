@@ -46,4 +46,4 @@
 
 **Interface**
 - All ten cases were repeated in light mode and dark mode. No layout breakage or unreadable text was observed.
-- Import of `sample_dataset.json` restores 12 records with block size 3 and re-renders both files.
+- Import of `samples/sample_dataset.json` restores 12 records with block size 3 and re-renders both files.
