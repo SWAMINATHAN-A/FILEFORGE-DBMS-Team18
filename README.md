@@ -1,10 +1,10 @@
-﻿# FILEFORGE â€” Heap vs Sequential File Organization Lab
+﻿# FILEFORGE ” Heap vs Sequential File Organization Lab "
 
 An interactive DBMS virtual lab. Insert, search and delete records in a **Heap file** and a **Sequential file** side by side, watch the disk blocks change, stream a live workload, and practise with **50 real GATE CSE questions**, **AI-generated quizzes** (no API key) or **quizzes built from your own PDF notes**.
 
 ![FILEFORGE preview](assets/og-image.png)
 
-**Live site:** https://fileforge-dbms.vercel.app/ *(after you enable GitHub Pages â€” see below)*
+**Live site:** https://fileforge-dbms.vercel.app/
 
 ---
 
