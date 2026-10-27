@@ -78,10 +78,6 @@ samples/                sample_dataset.json (importable), a sample spreadsheet, 
 docs/                   AI prompt log and test cases
 ```
 
-## Adding team photos
-
-Photos live in `assets/team/` as `arya.jpg`, `dani.jpg` and `gokul.jpg` (square, about 480Ã—480). To change one, replace the file with the same name. If a photo is ever missing, the card shows the person's initials instead.
-
 ## How the quizzes work
 
 - **GATE previous-year questions** are real GATE CSE questions (1994â€“2026) on file structures & indexing, normalization and transactions. They are re-worded for the app but keep the original parameters, so the official answers hold. Each links to its source listing.
@@ -96,6 +92,10 @@ Photos live in `assets/team/` as `arya.jpg`, `dani.jpg` and `gokul.jpg` (square,
 | Dani Noble Varkey | 25BCE1894 | Interface pages, testing, Dual Race Modification, correction of code |
 | Gokul Biju | 25BCE1989 | Help manual, testing and documentation |
 
-B.Tech CSE Â· Database Management Systems Â· Team 18 Â· 2026â€“27
+Guided By
+Dr. Swaminathan A
+Assistant Professor
+
+B.Tech CSE · Database Management Systems · Team 18 · 2026-27
 
 Project documents: [AI prompt log](docs/AI_PROMPT_LOG.md) Â· [Test cases](docs/TEST_CASES.md)
