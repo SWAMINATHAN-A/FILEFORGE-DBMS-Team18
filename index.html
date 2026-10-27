@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,10 +13,10 @@
     <!-- Social previews. If you host somewhere other than GitHub Pages, change the two URLs below. -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="FILEFORGE">
-    <meta property="og:title" content="FILEFORGE — Heap vs Sequential, visualized">
+    <meta property="og:title" content="FILEFORGE â€” Heap vs Sequential, visualized">
     <meta property="og:description" content="Simulate file organizations, stream live workloads, and practise real GATE questions.">
-    <meta property="og:url" content="https://dnvdevx.github.io/DBMS_Project/">
-    <meta property="og:image" content="https://dnvdevx.github.io/DBMS_Project/assets/og-image.png">
+    <meta property="og:url" content="https://fileforge-dbms.vercel.app/">
+    <meta property="og:image" content="https://fileforge-dbms.vercel.app/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +44,7 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <div class="brand">
-            <div class="brand-mark">◆</div>
+            <div class="brand-mark">â—†</div>
             <div>
                 <h2>FILEFORGE</h2>
                 <span>DBMS VIRTUAL LAB</span>
@@ -54,16 +54,16 @@
         <div class="nav-label">WORKSPACE</div>
         <nav>
             <button class="nav-btn active" data-page="dashboard">
-                <span>⌂</span> Dashboard
+                <span>âŒ‚</span> Dashboard
             </button>
             <button class="nav-btn" data-page="simulator">
-                <span>▣</span> Simulator
+                <span>â–£</span> Simulator
             </button>
             <button class="nav-btn" data-page="analytics">
-                <span>◉</span> Analytics
+                <span>â—‰</span> Analytics
             </button>
             <button class="nav-btn" data-page="history">
-                <span>◷</span> History
+                <span>â—·</span> History
             </button>
         </nav>
 
@@ -73,30 +73,30 @@
                 <span>?</span> Learn
             </button>
             <button class="nav-btn" data-page="teach">
-                <span>▶</span> Teach
+                <span>â–¶</span> Teach
             </button>
             <button class="nav-btn" data-page="quiz">
-                <span>✓</span> Quiz
+                <span>âœ“</span> Quiz
             </button>
             <button class="nav-btn" data-page="help">
-                <span>☰</span> Help
+                <span>â˜°</span> Help
             </button>
             <button class="nav-btn" data-page="about">
-                <span>ⓘ</span> Developed By
+                <span>â“˜</span> Developed By
             </button>
         </nav>
 
         <!-- Sidebar footer with theme toggle -->
         <div class="sidebar-footer">
             <button id="themeBtn" class="theme-btn">
-                ◐ <span>Toggle Theme</span>
+                â— <span>Toggle Theme</span>
             </button>
             <div class="engine-status">
                 <span class="online-dot"></span>
                 Simulation Engine <b>ONLINE</b>
             </div>
             <div class="site-credit">
-                © 2026 Team 18 · <a href="https://github.com/dnvdevx/DBMS_Project" target="_blank" rel="noopener">Source on GitHub</a>
+                Â© 2026 Team 18 Â· <a href="https://github.com/dnvdevx/DBMS_Project" target="_blank" rel="noopener">Source on GitHub</a>
             </div>
 
             <!-- Current session badge (role / course), set by session.js -->
@@ -124,9 +124,9 @@
 
             <!-- Quick top action buttons -->
             <div class="topbar-actions">
-                <button class="top-btn" id="sampleBtn">⚡ Sample</button>
-                <button class="top-btn" id="exportBtn">↓ Export</button>
-                <button class="top-btn danger-outline" id="resetBtn" title="Reset Simulation">↻</button>
+                <button class="top-btn" id="sampleBtn">âš¡ Sample</button>
+                <button class="top-btn" id="exportBtn">â†“ Export</button>
+                <button class="top-btn danger-outline" id="resetBtn" title="Reset Simulation">â†»</button>
             </div>
         </header>
 
@@ -144,7 +144,7 @@
                     </p>
                     <div class="hero-actions">
                         <button class="primary-btn" onclick="navigate('simulator')">
-                            Launch Simulator <span>→</span>
+                            Launch Simulator <span>â†’</span>
                         </button>
                         <button class="ghost-btn" onclick="navigate('learn')">
                             Learn Concepts
@@ -163,7 +163,7 @@
                             <b>BLOCK 01</b> <span>103</span> <span>110</span>
                         </div>
                     </div>
-                    <div class="diagram-arrow">⇄</div>
+                    <div class="diagram-arrow">â‡„</div>
                     <div class="diagram-file sequential-diagram">
                         <div class="diagram-title">SEQUENTIAL <span>SORTED KEY</span></div>
                         <div class="mini-block">
@@ -179,7 +179,7 @@
             <!-- Overview stat counters -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon purple">▣</div>
+                    <div class="stat-icon purple">â–£</div>
                     <div>
                         <span>RECORDS</span>
                         <strong id="dashRecords">0</strong>
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon cyan">◈</div>
+                    <div class="stat-icon cyan">â—ˆ</div>
                     <div>
                         <span>OPERATIONS</span>
                         <strong id="dashOperations">0</strong>
@@ -296,19 +296,19 @@
                     <div class="experiment-list">
                         <button onclick="loadExperiment(1)">
                             <div><small>EXPERIMENT 01</small> <b>Search Comparison</b></div>
-                            <span>→</span>
+                            <span>â†’</span>
                         </button>
                         <button onclick="loadExperiment(2)">
                             <div><small>EXPERIMENT 02</small> <b>Block Capacity</b></div>
-                            <span>→</span>
+                            <span>â†’</span>
                         </button>
                         <button onclick="loadExperiment(3)">
                             <div><small>EXPERIMENT 03</small> <b>Mixed Workload</b></div>
-                            <span>→</span>
+                            <span>â†’</span>
                         </button>
                         <button onclick="loadExperiment(4)">
                             <div><small>EXPERIMENT 04</small> <b>Ordered Search</b></div>
-                            <span>→</span>
+                            <span>â†’</span>
                         </button>
                     </div>
                 </div>
@@ -325,9 +325,9 @@
                     <p>Perform the same operations on both organizations and compare their behavior.</p>
                 </div>
                 <div class="toolbar-actions">
-                    <button class="secondary-btn" onclick="generateDataset()">⟳ Generate Dataset</button>
-                    <button class="secondary-btn" onclick="openImport()">↑ Import</button>
-                    <button class="secondary-btn" onclick="downloadReport()">↓ Report</button>
+                    <button class="secondary-btn" onclick="generateDataset()">âŸ³ Generate Dataset</button>
+                    <button class="secondary-btn" onclick="openImport()">â†‘ Import</button>
+                    <button class="secondary-btn" onclick="downloadReport()">â†“ Report</button>
                     <input type="file" id="importFile" accept=".json" hidden>
                 </div>
             </div>
@@ -364,8 +364,8 @@
                 <!-- Operation action buttons -->
                 <div class="operation-row">
                     <button class="primary-btn" onclick="insertRecord()">+ Insert</button>
-                    <button class="secondary-btn" onclick="startSearch()">⌕ Search</button>
-                    <button class="secondary-btn delete-btn" onclick="deleteRecord()">× Delete</button>
+                    <button class="secondary-btn" onclick="startSearch()">âŒ• Search</button>
+                    <button class="secondary-btn delete-btn" onclick="deleteRecord()">Ã— Delete</button>
                 </div>
 
                 <!-- Configuration controls: block size, search strategy, animation speed -->
@@ -383,7 +383,7 @@
                         <label>SEARCH STRATEGY</label>
                         <select id="searchStrategy">
                             <option value="binary" selected>Binary Search (Sequential O(log N))</option>
-                            <option value="race">🏁 Dual Race Mode (Side-by-Side)</option>
+                            <option value="race">ðŸ Dual Race Mode (Side-by-Side)</option>
                             <option value="scan">Sequential Scan (Linear O(N))</option>
                             <option value="ordered">Ordered Scan (Sequential early stop)</option>
                         </select>
@@ -418,7 +418,7 @@
                     <div class="storage-metric-card">
                         <span class="metric-label">TOTAL ALLOCATED CAPACITY</span>
                         <div class="metric-val"><span id="totalCapacitySlots">0</span> <small>slots</small></div>
-                        <span class="metric-sub" id="allocatedBlocksSummary">0 blocks × 4 slots</span>
+                        <span class="metric-sub" id="allocatedBlocksSummary">0 blocks Ã— 4 slots</span>
                     </div>
 
                     <div class="storage-metric-card">
@@ -435,8 +435,8 @@
 
                     <div class="storage-metric-card">
                         <span class="metric-label">THEORETICAL I/O TRANSFER COST</span>
-                        <div class="metric-val"><span id="binaryCostEstimate">O(log₂ B)</span></div>
-                        <span class="metric-sub" id="binaryIoFormula">≤ 0 block I/Os (Binary Search)</span>
+                        <div class="metric-val"><span id="binaryCostEstimate">O(logâ‚‚ B)</span></div>
+                        <span class="metric-sub" id="binaryIoFormula">â‰¤ 0 block I/Os (Binary Search)</span>
                     </div>
                 </div>
             </div>
@@ -459,7 +459,7 @@
                             <div><span>BLOCKS</span> <b id="heapBlocks">0</b></div>
                         </div>
                     </div>
-                    <div class="file-path">HEAD → BLOCKS → RECORDS</div>
+                    <div class="file-path">HEAD â†’ BLOCKS â†’ RECORDS</div>
                     <div class="blocks" id="heapBlocksView"></div>
                 </div>
 
@@ -479,7 +479,7 @@
                             <div><span>BLOCKS</span> <b id="seqBlocks">0</b></div>
                         </div>
                     </div>
-                    <div class="file-path">BLOCKS → SORTED RECORDS → KEY ORDER</div>
+                    <div class="file-path">BLOCKS â†’ SORTED RECORDS â†’ KEY ORDER</div>
                     <div class="blocks" id="seqBlocksView"></div>
                 </div>
             </div>
@@ -497,9 +497,9 @@
                 </div>
 
                 <div class="playback-actions">
-                    <button class="circle-btn" onclick="previousStep()" title="Previous Step">‹</button>
-                    <button class="play-btn" id="playBtn" onclick="togglePlayback()" title="Play / Pause">▶</button>
-                    <button class="circle-btn" onclick="nextStep()" title="Next Step">›</button>
+                    <button class="circle-btn" onclick="previousStep()" title="Previous Step">â€¹</button>
+                    <button class="play-btn" id="playBtn" onclick="togglePlayback()" title="Play / Pause">â–¶</button>
+                    <button class="circle-btn" onclick="nextStep()" title="Next Step">â€º</button>
                     <button class="reset-playback" onclick="resetPlayback()">Reset</button>
                 </div>
             </div>
@@ -517,7 +517,7 @@
                     </div>
                     <div id="resultBox" class="result-content">
                         <div class="empty-result">
-                            <div>⌁</div>
+                            <div>âŒ</div>
                             <p>Run an operation to view detailed simulation statistics.</p>
                         </div>
                     </div>
@@ -530,7 +530,7 @@
                             <span>INTELLIGENT EXPLANATION</span>
                             <h3>Contextual Analysis</h3>
                         </div>
-                        <span class="ai-badge">✨ AI GUIDE</span>
+                        <span class="ai-badge">âœ¨ AI GUIDE</span>
                     </div>
 
                     <div id="explanation">
@@ -541,29 +541,29 @@
                     <div class="ai-tutor-box">
                         <div class="ai-tutor-header">
                             <div class="ai-tutor-title">
-                                <span class="ai-sparkle">✦</span>
+                                <span class="ai-sparkle">âœ¦</span>
                                 <h4>Ask AI Tutor</h4>
                             </div>
                             <span class="ai-sublabel">Interactive DBMS Guidance</span>
                         </div>
 
                         <div class="ai-chips">
-                            <button class="ai-chip" onclick="askAiTutor('binary_vs_linear')">💡 Why is Binary Search faster?</button>
-                            <button class="ai-chip" onclick="askAiTutor('block_capacity')">💡 Effect of Block Capacity (2 vs 8)</button>
-                            <button class="ai-chip" onclick="askAiTutor('heap_vs_seq')">💡 When to choose Heap vs Sequential?</button>
-                            <button class="ai-chip" onclick="askAiTutor('fragmentation')">💡 What is Internal Fragmentation?</button>
-                            <button class="ai-chip" onclick="askAiTutor('deletion')">💡 Record Deletion & Shifting Cost</button>
+                            <button class="ai-chip" onclick="askAiTutor('binary_vs_linear')">ðŸ’¡ Why is Binary Search faster?</button>
+                            <button class="ai-chip" onclick="askAiTutor('block_capacity')">ðŸ’¡ Effect of Block Capacity (2 vs 8)</button>
+                            <button class="ai-chip" onclick="askAiTutor('heap_vs_seq')">ðŸ’¡ When to choose Heap vs Sequential?</button>
+                            <button class="ai-chip" onclick="askAiTutor('fragmentation')">ðŸ’¡ What is Internal Fragmentation?</button>
+                            <button class="ai-chip" onclick="askAiTutor('deletion')">ðŸ’¡ Record Deletion & Shifting Cost</button>
                         </div>
 
                         <div class="ai-input-row">
                             <input type="text" id="aiCustomQuery" placeholder="Ask any DBMS file organization question..." onkeydown="if(event.key==='Enter') submitAiQuery()">
-                            <button class="primary-btn ai-ask-btn" onclick="submitAiQuery()">Ask AI ↵</button>
+                            <button class="primary-btn ai-ask-btn" onclick="submitAiQuery()">Ask AI â†µ</button>
                         </div>
 
                         <div id="aiTutorResponse" class="ai-chat-bubble" style="display:none;">
                             <div class="ai-bubble-header">
-                                <span>✦ AI TUTOR RESPONSE</span>
-                                <button class="ai-close-btn" onclick="$('aiTutorResponse').style.display='none'">✕</button>
+                                <span>âœ¦ AI TUTOR RESPONSE</span>
+                                <button class="ai-close-btn" onclick="$('aiTutorResponse').style.display='none'">âœ•</button>
                             </div>
                             <div id="aiTutorResponseText" class="ai-bubble-body"></div>
                         </div>
@@ -670,12 +670,12 @@
                             <tr>
                                 <td>Key Search (Probes)</td>
                                 <td>O(n) [avg n/2]</td>
-                                <td><strong>O(log₂ n)</strong> [Binary Search]</td>
+                                <td><strong>O(logâ‚‚ n)</strong> [Binary Search]</td>
                             </tr>
                             <tr>
                                 <td>Search Block I/O</td>
                                 <td>avg b/2 disk blocks</td>
-                                <td><strong>⌈log₂ b⌉</strong> disk blocks</td>
+                                <td><strong>âŒˆlogâ‚‚ bâŒ‰</strong> disk blocks</td>
                             </tr>
                             <tr>
                                 <td>Insert Record</td>
@@ -707,7 +707,7 @@
                         <span>BENCHMARK</span>
                         <h3>Run Same Workload</h3>
                     </div>
-                    <button class="primary-btn" onclick="runWorkload()">Run Benchmark →</button>
+                    <button class="primary-btn" onclick="runWorkload()">Run Benchmark â†’</button>
                 </div>
                 <p class="muted-text">Run identical search operations against both file organizations and compare simulated work.</p>
                 <div id="workloadResult" class="workload-result">
@@ -856,8 +856,8 @@
                 <ol class="help-steps">
                     <li>
                         <b>Load data.</b>
-                        Open <b>Simulator</b> and click <b>⟳ Generate Dataset</b> for a random set of records,
-                        or <b>↑ Import</b> and choose <a href="samples/sample_dataset.json" download><code>sample_dataset.json</code></a> (click to download it first).
+                        Open <b>Simulator</b> and click <b>âŸ³ Generate Dataset</b> for a random set of records,
+                        or <b>â†‘ Import</b> and choose <a href="samples/sample_dataset.json" download><code>sample_dataset.json</code></a> (click to download it first).
                     </li>
                     <li>
                         <b>Pick a strategy.</b>
@@ -866,12 +866,12 @@
                     </li>
                     <li>
                         <b>Start a search.</b>
-                        Type an existing ID into <b>RECORD ID</b> and press <b>⌕ Search</b>.
+                        Type an existing ID into <b>RECORD ID</b> and press <b>âŒ• Search</b>.
                         The playback bar arms itself and shows <i>Searching for Record &lt;id&gt;</i>.
                     </li>
                     <li>
                         <b>Step through it.</b>
-                        Press <b>▶</b> to auto-play, or <b>›</b> to advance one probe at a time and read
+                        Press <b>â–¶</b> to auto-play, or <b>â€º</b> to advance one probe at a time and read
                         the explanation printed for each step.
                     </li>
                 </ol>
@@ -882,12 +882,12 @@
                     <span class="eyebrow">RECORD OPERATIONS</span>
                     <h3>Insert, Search, Delete</h3>
                     <ul class="help-list">
-                        <li><b>+ Insert</b> — needs all four fields (<span id="helpFieldList">ID, Name, Department, Marks 0–100</span>).
+                        <li><b>+ Insert</b> â€” needs all four fields (<span id="helpFieldList">ID, Name, Department, Marks 0â€“100</span>).
                             The record is appended to the end of the Heap file and placed in sorted key
                             position in the Sequential file. Duplicate IDs are rejected.</li>
-                        <li><b>⌕ Search</b> — only the <b>RECORD ID</b> field is used. This does not
+                        <li><b>âŒ• Search</b> â€” only the <b>RECORD ID</b> field is used. This does not
                             run instantly; it builds an animation queue you drive with the playback bar.</li>
-                        <li><b>× Delete</b> — only the <b>RECORD ID</b> field is used. The record is removed
+                        <li><b>Ã— Delete</b> â€” only the <b>RECORD ID</b> field is used. The record is removed
                             from both files and the blocks are re-rendered so you can watch records shift.</li>
                     </ul>
                 </div>
@@ -896,11 +896,11 @@
                     <span class="eyebrow">PLAYBACK BAR</span>
                     <h3>Controlling the animation</h3>
                     <ul class="help-list">
-                        <li><b>▶ / ❚❚</b> — play or pause the probe sequence at the selected speed.</li>
-                        <li><b>›</b> — advance exactly one probe. Best for viva demos and for counting
+                        <li><b>â–¶ / âšâš</b> â€” play or pause the probe sequence at the selected speed.</li>
+                        <li><b>â€º</b> â€” advance exactly one probe. Best for viva demos and for counting
                             comparisons by hand.</li>
-                        <li><b>‹</b> — step backward to re-examine the previous probe.</li>
-                        <li><b>Reset</b> — clear the current run and unhighlight all blocks. The data itself
+                        <li><b>â€¹</b> â€” step backward to re-examine the previous probe.</li>
+                        <li><b>Reset</b> â€” clear the current run and unhighlight all blocks. The data itself
                             is not deleted.</li>
                         <li>The progress bar and the <b>n / total</b> counter show how far through the
                             probe sequence you are.</li>
@@ -919,7 +919,7 @@
                         <tr>
                             <td>Binary Search</td>
                             <td>Linear scan, O(N)</td>
-                            <td>Binary search, O(log₂ N)</td>
+                            <td>Binary search, O(logâ‚‚ N)</td>
                             <td>The core performance gap between the two organizations</td>
                         </tr>
                         <tr>
@@ -950,12 +950,12 @@
                     <span class="eyebrow">READING THE BLOCKS</span>
                     <h3>Storage view</h3>
                     <ul class="help-list">
-                        <li><b>BLOCK CAPACITY</b> slider (2–8) sets how many records fit in one disk block.
+                        <li><b>BLOCK CAPACITY</b> slider (2â€“8) sets how many records fit in one disk block.
                             Lower it to create more blocks and more I/O; raise it to see fewer, fuller blocks.</li>
                         <li><b>FULL (4/4)</b> in green means the block is packed;
                             <b>PARTIAL (2/4)</b> in amber means it has free slots.</li>
-                        <li>Dashed outlines are empty slots — this is <b>internal fragmentation</b>.</li>
-                        <li><b>Packing Factor</b> = active records ÷ total allocated slots × 100%.</li>
+                        <li>Dashed outlines are empty slots â€” this is <b>internal fragmentation</b>.</li>
+                        <li><b>Packing Factor</b> = active records Ã· total allocated slots Ã— 100%.</li>
                     </ul>
                 </div>
 
@@ -963,15 +963,15 @@
                     <span class="eyebrow">OTHER PAGES</span>
                     <h3>Where everything lives</h3>
                     <ul class="help-list">
-                        <li><b>Dashboard</b> — summary metrics and shortcuts into the simulator.</li>
-                        <li><b>Analytics</b> — comparison charts of comparisons and block accesses.</li>
-                        <li><b>History</b> — saved simulations you can reload.</li>
-                        <li><b>Live Stream</b> — a real-time records desk; watch block I/O add up for both files.</li>
-                        <li><b>Learn</b> — concepts with quick checks, a search visualizer, GATE calculators, solved examples and a cheat sheet.</li>
-                        <li><b>Teach</b> — a short video and article for each file organization.</li>
-                        <li><b>Quiz</b> — Quiz Lab: bank, GATE previous-year, AI-generated or PDF-based quizzes.</li>
-                        <li><b>Developed By</b> — the team and course details.</li>
-                        <li><b>AI Tutor</b> (inside Simulator) — click a question chip or type your own;
+                        <li><b>Dashboard</b> â€” summary metrics and shortcuts into the simulator.</li>
+                        <li><b>Analytics</b> â€” comparison charts of comparisons and block accesses.</li>
+                        <li><b>History</b> â€” saved simulations you can reload.</li>
+                        <li><b>Live Stream</b> â€” a real-time records desk; watch block I/O add up for both files.</li>
+                        <li><b>Learn</b> â€” concepts with quick checks, a search visualizer, GATE calculators, solved examples and a cheat sheet.</li>
+                        <li><b>Teach</b> â€” a short video and article for each file organization.</li>
+                        <li><b>Quiz</b> â€” Quiz Lab: bank, GATE previous-year, AI-generated or PDF-based quizzes.</li>
+                        <li><b>Developed By</b> â€” the team and course details.</li>
+                        <li><b>AI Tutor</b> (inside Simulator) â€” click a question chip or type your own;
                             answers use your live record count and block size.</li>
                     </ul>
                 </div>
@@ -982,12 +982,12 @@
                     <span class="eyebrow">QUIZ LAB</span>
                     <h3>Six ways to get questions</h3>
                     <ul class="help-list">
-                        <li><b>Question bank</b> — 50 original GATE-style questions plus the 50 GATE PYQs; filter by topic and tag.</li>
-                        <li><b>📜 GATE previous years</b> — real GATE CSE questions (1994–2026), filter by topic, paper years and marks. Each links to the original.</li>
-                        <li><b>✨ AI generated</b> — fresh questions for your count and difficulty. No API key; up to 20 per quiz.</li>
-                        <li><b>Live</b> — numeric questions built from your current simulator data.</li>
-                        <li><b>Bank + Live</b> — half and half.</li>
-                        <li><b>📄 From your PDF / DOC</b> — upload notes (PDF, DOCX, TXT) and get fill-in-the-blank and true/false questions.</li>
+                        <li><b>Question bank</b> â€” 50 original GATE-style questions plus the 50 GATE PYQs; filter by topic and tag.</li>
+                        <li><b>ðŸ“œ GATE previous years</b> â€” real GATE CSE questions (1994â€“2026), filter by topic, paper years and marks. Each links to the original.</li>
+                        <li><b>âœ¨ AI generated</b> â€” fresh questions for your count and difficulty. No API key; up to 20 per quiz.</li>
+                        <li><b>Live</b> â€” numeric questions built from your current simulator data.</li>
+                        <li><b>Bank + Live</b> â€” half and half.</li>
+                        <li><b>ðŸ“„ From your PDF / DOC</b> â€” upload notes (PDF, DOCX, TXT) and get fill-in-the-blank and true/false questions.</li>
                     </ul>
                 </div>
 
@@ -996,9 +996,9 @@
                     <h3>Real-time workload</h3>
                     <ul class="help-list">
                         <li>Pick a <b>scenario</b> (Registration rush, Results day, Semester cleanup, Balanced) or set your own weights.</li>
-                        <li><b>▶ Start stream</b> applies operations continuously; <b>⚡ Burst ×20</b> applies twenty at once.</li>
+                        <li><b>â–¶ Start stream</b> applies operations continuously; <b>âš¡ Burst Ã—20</b> applies twenty at once.</li>
                         <li>The highlighted block is the one the last operation touched; hover any block to see its keys.</li>
-                        <li>The table shows average block I/O per operation type — green marks the cheaper file.</li>
+                        <li>The table shows average block I/O per operation type â€” green marks the cheaper file.</li>
                     </ul>
                 </div>
             </div>
@@ -1007,19 +1007,19 @@
                 <span class="eyebrow">TROUBLESHOOTING</span>
                 <h3>Common issues</h3>
                 <ul class="help-list">
-                    <li><b>"Please enter all record details"</b> — Insert needs all four fields; Search and
+                    <li><b>"Please enter all record details"</b> â€” Insert needs all four fields; Search and
                         Delete need only the ID.</li>
-                    <li><b>Nothing animates after pressing Search</b> — the run is armed but paused.
-                        Press <b>▶</b> or <b>›</b>.</li>
-                    <li><b>"Record already exists"</b> — primary keys are unique; pick another ID.</li>
-                    <li><b>Import does nothing</b> — the file must be valid JSON exported by
-                        <b>↓ Report</b> / export, with <code>heap</code>, <code>sequential</code> and
+                    <li><b>Nothing animates after pressing Search</b> â€” the run is armed but paused.
+                        Press <b>â–¶</b> or <b>â€º</b>.</li>
+                    <li><b>"Record already exists"</b> â€” primary keys are unique; pick another ID.</li>
+                    <li><b>Import does nothing</b> â€” the file must be valid JSON exported by
+                        <b>â†“ Report</b> / export, with <code>heap</code>, <code>sequential</code> and
                         <code>blockSize</code> keys.</li>
-                    <li><b>Colours look wrong</b> — use <b>◐ Toggle Theme</b> at the bottom of the sidebar
+                    <li><b>Colours look wrong</b> â€” use <b>â— Toggle Theme</b> at the bottom of the sidebar
                         to switch between dark and light mode.</li>
-                    <li><b>AI quiz fell back to the bank</b> — the free AI service was busy or you're offline.
+                    <li><b>AI quiz fell back to the bank</b> â€” the free AI service was busy or you're offline.
                         Wait a minute and try again; your quiz still works meanwhile.</li>
-                    <li><b>PDF says “no readable text”</b> — it's a scanned image. Use a PDF with selectable text,
+                    <li><b>PDF says â€œno readable textâ€</b> â€” it's a scanned image. Use a PDF with selectable text,
                         or a DOCX/TXT version of the notes.</li>
                 </ul>
             </div>
@@ -1028,10 +1028,10 @@
         <!-- ==================== DEVELOPED BY PAGE ==================== -->
         <section class="page" id="about">
             <div class="about-card panel">
-                <div class="about-mark">◆</div>
+                <div class="about-mark">â—†</div>
                 <span class="status-badge">DBMS VIRTUAL LAB</span>
                 <h2>FILEFORGE</h2>
-                <p>Heap vs Sequential File Organization — an interactive simulator, live workload lab and GATE practice kit.</p>
+                <p>Heap vs Sequential File Organization â€” an interactive simulator, live workload lab and GATE practice kit.</p>
                 <div class="about-tags">
                     <span>MODULE 04</span>
                     <span>FILE ORGANIZATION</span>
@@ -1040,7 +1040,7 @@
                 <p class="session-about-line" id="aboutSessionLine" style="display:none;"></p>
             </div>
 
-            <!-- Team. To add a photo, save it as assets/team/<name>.jpg (square, ~480×480).
+            <!-- Team. To add a photo, save it as assets/team/<name>.jpg (square, ~480Ã—480).
                  Until the file exists, the card shows the person's initials. -->
             <div class="page-intro team-intro">
                 <span class="eyebrow">DEVELOPED BY</span>
@@ -1084,8 +1084,8 @@
                     <ul class="help-list">
                         <li><b>Department:</b> B.Tech CSE</li>
                         <li><b>Course:</b> Database Management Systems</li>
-                        <li><b>Team:</b> 18 — Heap vs Sequential File Visualizer</li>
-                        <li><b>Academic year:</b> 2026–27</li>
+                        <li><b>Team:</b> 18 â€” Heap vs Sequential File Visualizer</li>
+                        <li><b>Academic year:</b> 2026â€“27</li>
                     </ul>
                 </div>
 
@@ -1111,7 +1111,7 @@
                     <span>pdf.js</span>
                     <span>mammoth.js</span>
                     <span>Pollinations AI (key-less)</span>
-                    <span>No build step · static hosting</span>
+                    <span>No build step Â· static hosting</span>
                 </div>
                 <p class="muted-text team-credits">GATE previous-year questions are re-worded from the official GATE CSE papers; each links to its source listing.</p>
             </div>
