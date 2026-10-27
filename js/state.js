@@ -28,10 +28,3 @@ let playback = {
     current: -1,
     timer: null
 };
-
-// Quiz state tracking
-let quiz = {
-    index: 0,
-    score: 0,
-    answered: false
-};

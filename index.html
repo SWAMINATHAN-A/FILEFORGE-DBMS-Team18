@@ -3,11 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FILEFORGE | DBMS File Organization Lab</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="ext.css">
+    <title>FILEFORGE | Heap vs Sequential File Organization Lab</title>
+    <meta name="description" content="Interactive DBMS lab: simulate heap and sequential file organizations, watch block I/O in a live stream, and practise 50 real GATE CSE questions, AI-generated quizzes or quizzes from your own notes.">
+    <meta name="keywords" content="DBMS, file organization, heap file, sequential file, binary search, B+ tree, indexing, GATE CSE, previous year questions, quiz">
+    <meta name="author" content="Arya Sengupta, Dani Noble Varkey, Gokul Biju">
+    <meta name="theme-color" content="#07090d">
+    <meta name="color-scheme" content="dark light">
+
+    <!-- Social previews. If you host somewhere other than GitHub Pages, change the two URLs below. -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FILEFORGE">
+    <meta property="og:title" content="FILEFORGE — Heap vs Sequential, visualized">
+    <meta property="og:description" content="Simulate file organizations, stream live workloads, and practise real GATE questions.">
+    <meta property="og:url" content="https://dnvdevx.github.io/DBMS_Project/">
+    <meta property="og:image" content="https://dnvdevx.github.io/DBMS_Project/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/icon-192.png" type="image/png" sizes="192x192">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ext.css">
 </head>
 <body>
+<noscript>
+    <div style="padding:24px;font-family:sans-serif;background:#10141b;color:#f4f6fb">
+        FILEFORGE is an interactive simulator and needs JavaScript. Please enable it and reload the page.
+    </div>
+</noscript>
 
 <!-- Toast notifications container -->
 <div id="toastContainer"></div>
@@ -55,7 +82,7 @@
                 <span>☰</span> Help
             </button>
             <button class="nav-btn" data-page="about">
-                <span>ⓘ</span> About
+                <span>ⓘ</span> Developed By
             </button>
         </nav>
 
@@ -67,6 +94,9 @@
             <div class="engine-status">
                 <span class="online-dot"></span>
                 Simulation Engine <b>ONLINE</b>
+            </div>
+            <div class="site-credit">
+                © 2026 Team 18 · <a href="https://github.com/dnvdevx/DBMS_Project" target="_blank" rel="noopener">Source on GitHub</a>
             </div>
 
             <!-- Current session badge (role / course), set by session.js -->
@@ -809,28 +839,8 @@
         </section>
 
         <!-- ==================== QUIZ PAGE ==================== -->
-        <section class="page" id="quiz">
-            <div class="page-intro">
-                <span class="eyebrow">KNOWLEDGE CHECK</span>
-                <h2>DBMS Quick Quiz</h2>
-                <p>Test your understanding of Heap and Sequential files.</p>
-            </div>
-
-            <div class="quiz-container panel">
-                <div class="quiz-progress">
-                    <span id="quizNumber">Question 1 of 5</span>
-                    <div><i id="quizProgress"></i></div>
-                </div>
-
-                <h3 id="quizQuestion">Loading question...</h3>
-                <div id="quizOptions" class="quiz-options"></div>
-
-                <div class="quiz-footer">
-                    <span id="quizScore">Score: 0</span>
-                    <button class="primary-btn" id="quizNextBtn" onclick="nextQuizQuestion()">Next →</button>
-                </div>
-            </div>
-        </section>
+        <!-- Rendered by quizlab.js -->
+        <section class="page" id="quiz"></section>
 
         <!-- ==================== HELP / USER MANUAL PAGE ==================== -->
         <section class="page" id="help">
@@ -847,7 +857,7 @@
                     <li>
                         <b>Load data.</b>
                         Open <b>Simulator</b> and click <b>⟳ Generate Dataset</b> for a random set of records,
-                        or <b>↑ Import</b> and choose <code>sample_dataset.json</code> from the project folder.
+                        or <b>↑ Import</b> and choose <a href="samples/sample_dataset.json" download><code>sample_dataset.json</code></a> (click to download it first).
                     </li>
                     <li>
                         <b>Pick a strategy.</b>
@@ -955,11 +965,40 @@
                     <ul class="help-list">
                         <li><b>Dashboard</b> — summary metrics and shortcuts into the simulator.</li>
                         <li><b>Analytics</b> — comparison charts of comparisons and block accesses.</li>
-                        <li><b>History</b> — a log of every operation run in this session.</li>
-                        <li><b>Learn</b> — the underlying DBMS theory in nine short cards.</li>
-                        <li><b>Quiz</b> — self-test questions on file organization.</li>
+                        <li><b>History</b> — saved simulations you can reload.</li>
+                        <li><b>Live Stream</b> — a real-time records desk; watch block I/O add up for both files.</li>
+                        <li><b>Learn</b> — concepts with quick checks, a search visualizer, GATE calculators, solved examples and a cheat sheet.</li>
+                        <li><b>Teach</b> — a short video and article for each file organization.</li>
+                        <li><b>Quiz</b> — Quiz Lab: bank, GATE previous-year, AI-generated or PDF-based quizzes.</li>
+                        <li><b>Developed By</b> — the team and course details.</li>
                         <li><b>AI Tutor</b> (inside Simulator) — click a question chip or type your own;
                             answers use your live record count and block size.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="dashboard-columns">
+                <div class="panel help-panel">
+                    <span class="eyebrow">QUIZ LAB</span>
+                    <h3>Six ways to get questions</h3>
+                    <ul class="help-list">
+                        <li><b>Question bank</b> — 50 original GATE-style questions plus the 50 GATE PYQs; filter by topic and tag.</li>
+                        <li><b>📜 GATE previous years</b> — real GATE CSE questions (1994–2026), filter by topic, paper years and marks. Each links to the original.</li>
+                        <li><b>✨ AI generated</b> — fresh questions for your count and difficulty. No API key; up to 20 per quiz.</li>
+                        <li><b>Live</b> — numeric questions built from your current simulator data.</li>
+                        <li><b>Bank + Live</b> — half and half.</li>
+                        <li><b>📄 From your PDF / DOC</b> — upload notes (PDF, DOCX, TXT) and get fill-in-the-blank and true/false questions.</li>
+                    </ul>
+                </div>
+
+                <div class="panel help-panel">
+                    <span class="eyebrow">LIVE STREAM</span>
+                    <h3>Real-time workload</h3>
+                    <ul class="help-list">
+                        <li>Pick a <b>scenario</b> (Registration rush, Results day, Semester cleanup, Balanced) or set your own weights.</li>
+                        <li><b>▶ Start stream</b> applies operations continuously; <b>⚡ Burst ×20</b> applies twenty at once.</li>
+                        <li>The highlighted block is the one the last operation touched; hover any block to see its keys.</li>
+                        <li>The table shows average block I/O per operation type — green marks the cheaper file.</li>
                     </ul>
                 </div>
             </div>
@@ -978,97 +1017,103 @@
                         <code>blockSize</code> keys.</li>
                     <li><b>Colours look wrong</b> — use <b>◐ Toggle Theme</b> at the bottom of the sidebar
                         to switch between dark and light mode.</li>
+                    <li><b>AI quiz fell back to the bank</b> — the free AI service was busy or you're offline.
+                        Wait a minute and try again; your quiz still works meanwhile.</li>
+                    <li><b>PDF says “no readable text”</b> — it's a scanned image. Use a PDF with selectable text,
+                        or a DOCX/TXT version of the notes.</li>
                 </ul>
             </div>
         </section>
 
-        <!-- ==================== ABOUT PAGE ==================== -->
+        <!-- ==================== DEVELOPED BY PAGE ==================== -->
         <section class="page" id="about">
             <div class="about-card panel">
                 <div class="about-mark">◆</div>
                 <span class="status-badge">DBMS VIRTUAL LAB</span>
                 <h2>FILEFORGE</h2>
-                <p>Heap vs Sequential File Organization Interactive Simulator</p>
+                <p>Heap vs Sequential File Organization — an interactive simulator, live workload lab and GATE practice kit.</p>
                 <div class="about-tags">
                     <span>MODULE 04</span>
                     <span>FILE ORGANIZATION</span>
-                    <span>INTERACTIVE LAB</span>
+                    <span>TEAM 18</span>
                 </div>
                 <p class="session-about-line" id="aboutSessionLine" style="display:none;"></p>
             </div>
 
-            <div class="dashboard-columns">
-                <div class="panel">
-                    <span class="eyebrow">PROJECT OBJECTIVE</span>
-                    <h3>Learn through experimentation</h3>
-                    <p class="large-paragraph">
-                        FILEFORGE converts database file organization theory into an interactive environment
-                        where learners can insert, search, delete, visualize, compare, and analyze records.
-                    </p>
-                </div>
-
-                <div class="panel">
-                    <span class="eyebrow">TECHNOLOGY</span>
-                    <h3>Frontend Architecture</h3>
-                    <div class="tech-stack">
-                        <span>HTML5</span>
-                        <span>CSS3</span>
-                        <span>JavaScript</span>
-                        <span>Local Storage</span>
-                        <span>Responsive UI</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Team / developer details -->
-            <div class="panel help-panel">
+            <!-- Team. To add a photo, save it as assets/team/<name>.jpg (square, ~480×480).
+                 Until the file exists, the card shows the person's initials. -->
+            <div class="page-intro team-intro">
                 <span class="eyebrow">DEVELOPED BY</span>
-                <h3>Project Team</h3>
-                <table class="complexity-table help-table">
-                    <thead>
-                        <tr><th>Student Name</th><th>Register / Roll Number</th><th>Contribution</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Arya Sengupta</td>
-                            <td>25BCE1795</td>
-                            <td>Search algorithms, dual race mode, fragmentation model, AI tutor</td>
-                        </tr>
-                        <tr>
-                            <td>Dani Noble Varkey</td>
-                            <td>25BCE1894</td>
-                            <td>Interface pages, help manual, testing and documentation</td>
-                        </tr>
-                        <tr>
-                            <td>Gokul B</td>
-                            <td>25BCE1989</td>
-                            <td>Interface pages, help manual, testing and documentation</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2>The team</h2>
+                <p>B.Tech CSE students who built FILEFORGE for the Database Management Systems course.</p>
+            </div>
+            <div class="team-grid">
+                <article class="panel team-card">
+                    <div class="team-avatar" data-initials="AS">
+                        <img src="assets/team/arya.jpg" alt="Arya Sengupta" width="480" height="480" loading="lazy" onerror="this.remove()">
+                    </div>
+                    <h3>Arya Sengupta</h3>
+                    <span class="team-reg">25BCE1795</span>
+                    <p>Search algorithms, Dual Race Mode, fragmentation model, AI tutor</p>
+                    <div class="team-tags"><span>Algorithms</span><span>Simulation</span></div>
+                </article>
+                <article class="panel team-card">
+                    <div class="team-avatar" data-initials="DNV">
+                        <img src="assets/team/dani.jpg" alt="Dani Noble Varkey" width="480" height="480" loading="lazy" onerror="this.remove()">
+                    </div>
+                    <h3>Dani Noble Varkey</h3>
+                    <span class="team-reg">25BCE1894</span>
+                    <p>Interface pages, help manual, testing and documentation</p>
+                    <div class="team-tags"><span>UI</span><span>Docs &amp; testing</span></div>
+                </article>
+                <article class="panel team-card">
+                    <div class="team-avatar" data-initials="GB">
+                        <img src="assets/team/gokul.jpg" alt="Gokul Biju" width="480" height="480" loading="lazy" onerror="this.remove()">
+                    </div>
+                    <h3>Gokul Biju</h3>
+                    <span class="team-reg">25BCE1989</span>
+                    <p>Interface pages, help manual, testing and documentation</p>
+                    <div class="team-tags"><span>UI</span><span>Docs &amp; testing</span></div>
+                </article>
             </div>
 
             <div class="dashboard-columns">
                 <div class="panel help-panel">
                     <span class="eyebrow">COURSE DETAILS</span>
-                    <h3>Academic Information</h3>
+                    <h3>Academic information</h3>
                     <ul class="help-list">
-                        <li><b>Department:</b> BTech. CSE</li>
+                        <li><b>Department:</b> B.Tech CSE</li>
                         <li><b>Course:</b> Database Management Systems</li>
-                        <li><b>Team Number:</b> 18 — Heap vs Sequential File Visualizer</li>
-                        <li><b>Academic Year:</b> 2026-27</li>
+                        <li><b>Team:</b> 18 — Heap vs Sequential File Visualizer</li>
+                        <li><b>Academic year:</b> 2026–27</li>
                     </ul>
                 </div>
 
-                <!-- <div class="panel help-panel">
-                    <span class="eyebrow">GUIDED BY</span>
-                    <h3>Faculty Guide</h3>
-                    <ul class="help-list">
-                        <li><b>Name:</b> GUIDE_NAME</li>
-                        <li><b>Designation:</b> GUIDE_DESIGNATION</li>
-                        <li><b>Institution:</b> INSTITUTION_NAME</li>
-                    </ul>
-                </div> -->
+                <div class="panel">
+                    <span class="eyebrow">PROJECT OBJECTIVE</span>
+                    <h3>Learn through experimentation</h3>
+                    <p class="large-paragraph">
+                        FILEFORGE turns database file-organization theory into something you can poke at:
+                        insert, search and delete records, watch the blocks change, stream a live workload,
+                        and test yourself on real GATE questions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="panel">
+                <span class="eyebrow">TECHNOLOGY</span>
+                <h3>Built with</h3>
+                <div class="tech-stack">
+                    <span>HTML5</span>
+                    <span>CSS3</span>
+                    <span>Vanilla JavaScript</span>
+                    <span>localStorage</span>
+                    <span>pdf.js</span>
+                    <span>mammoth.js</span>
+                    <span>Pollinations AI (key-less)</span>
+                    <span>No build step · static hosting</span>
+                </div>
+                <p class="muted-text team-credits">GATE previous-year questions are re-worded from the official GATE CSE papers; each links to its source listing.</p>
             </div>
         </section>
 
@@ -1084,40 +1129,26 @@
 <script src="js/aiTutor.js"></script>
 <script src="js/workload.js"></script>
 <script src="js/history.js"></script>
-<script src="js/quiz.js"></script>
 <script src="js/main.js"></script>
 
 <!-- Intro boot animation + student/employee session setup (self-contained, no dependency on the modules above) -->
-<script src="session.js"></script>
+<script src="js/session.js"></script>
 
 <!-- Role-based data entry: swaps Marks/Department for working professionals (self-contained, needs session.js) -->
-<script src="profile.js"></script>
+<script src="js/profile.js"></script>
 
 <!-- Animated Heap vs Sequential comparison charts on the Dashboard (self-contained) -->
-<script src="charts.js"></script>
+<script src="js/charts.js"></script>
 
-<!-- Question bank + Quiz Lab (count / difficulty / AI), expanded Learn, improved Help, Live Stream -->
-<script src="questions.js"></script>
-<script src="quizlab.js"></script>
-<script src="learn.js"></script>
-<script src="help.js"></script>
-<script src="realtime.js"></script>
-
-<!-- Help page title label (runs after the app's own nav handler) -->
-<script>
-document.querySelectorAll('.nav-btn[data-page="help"]').forEach(function (btn) {
-    btn.addEventListener("click", function () {
-        document.getElementById("pageTitle").textContent = "Help & User Manual";
-        document.getElementById("breadcrumbPage").textContent = "HELP";
-    });
-});
-document.querySelectorAll('.nav-btn[data-page="teach"]').forEach(function (btn) {
-    btn.addEventListener("click", function () {
-        document.getElementById("pageTitle").textContent = "Teach: Heap & Sequential";
-        document.getElementById("breadcrumbPage").textContent = "TEACH";
-    });
-});
-</script>
+<!-- Question bank + GATE PYQs + Quiz Lab (bank / GATE / AI / live / PDF), Learn, Help, Live Stream -->
+<script src="js/questions.js"></script>
+<script src="js/pyq.js"></script>
+<script src="js/aiquiz.js"></script>
+<script src="js/docquiz.js"></script>
+<script src="js/quizlab.js"></script>
+<script src="js/learn.js"></script>
+<script src="js/help.js"></script>
+<script src="js/realtime.js"></script>
 
 </body>
 </html>

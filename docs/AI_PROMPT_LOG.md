@@ -89,19 +89,19 @@ Step 4: Conclude with practical engineering trade-offs.
 * **Prompt:**  
   *"Design a clean step-by-step state machine for visualizing Binary Search on sorted disk blocks in JavaScript. At each iteration, return the current `low`, `high`, `mid` pointers, the active search interval `[low..high]`, and an educational explanation message detailing whether the upper or lower partition was discarded."*
 * **Resolution:**  
-  Implemented `buildSearchSteps(id, "binary")` in [`app.js`](file:///C:/Users/danin/.gemini/antigravity/scratch/DBMS_Project/app.js) with real-time DOM updates applying `.low-ptr`, `.mid-ptr`, `.high-ptr`, and `.range-excluded` styles.
+  Implemented `buildSearchSteps(id, "binary")` in [`js/simulation.js`](../js/simulation.js) with real-time DOM updates applying `.low-ptr`, `.mid-ptr`, `.high-ptr`, and `.range-excluded` styles.
 
 ### Prompt D-2: Dual Race Mode Synchronous Interleaving
 * **Prompt:**  
   *"How can we construct an animation queue that runs a Heap linear scan and a Sequential binary search simultaneously in lock-step, showing both search heads advancing concurrently on each tick?"*
 * **Resolution:**  
-  Designed the `isRace` round interleaver in [`app.js`](file:///C:/Users/danin/.gemini/antigravity/scratch/DBMS_Project/app.js) pairing `heapProbes[r]` and `seqProbes[r]`, giving students an intuitive visual demonstration of why Binary Search terminates in $O(\log_2 N)$ while Heap is still scanning.
+  Designed the `isRace` round interleaver in [`js/simulation.js`](../js/simulation.js) pairing `heapProbes[r]` and `seqProbes[r]`, giving students an intuitive visual demonstration of why Binary Search terminates in $O(\log_2 N)$ while Heap is still scanning.
 
 ### Prompt D-3: Storage Utilization & Internal Fragmentation Modeling
 * **Prompt:**  
   *"Derive the mathematical formulas for internal fragmentation and packing factor in fixed-capacity database blocks, and specify how to visually represent partially filled blocks vs empty slots."*
 * **Resolution:**  
-  Added real-time calculation of total allocated slots ($b \times B$), wasted slots ($(b \times B) - N$), and packing factor percentage, with visual dashed `.record.empty-slot` placeholders in [`index.html`](file:///C:/Users/danin/.gemini/antigravity/scratch/DBMS_Project/index.html).
+  Added real-time calculation of total allocated slots ($b \times B$), wasted slots ($(b \times B) - N$), and packing factor percentage, with visual dashed `.record.empty-slot` placeholders in [`index.html`](../index.html).
 
 ---
 
